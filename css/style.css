@@ -917,7 +917,7 @@ img { display: block; max-width: 100%; }
 .bm-option-btn--qr:hover { background: rgba(255,255,255,0.1); }
 .bm-option-btn--disabled { background: rgba(255,255,255,0.04); color: var(--text-3); cursor: not-allowed; }
 .bm-qr-panel { margin-top: 14px; text-align: center; animation: fadeUp 0.2s ease; }
-.bm-qr-img { border-radius: 12px; border: 1px solid var(--border); width: 180px; height: 180px; display: inline-block; }
+.bm-qr-img { border-radius: 12px; border: 1px solid var(--border); width: auto; height: auto; display: inline-block; }
 .bm-qr-hint { font-size: 0.75rem; color: var(--text-3); margin-top: 8px; }
 
 /* ── PÁGINA DE DETALLE DE PRODUCTO ────────────────────────────────────────── */
