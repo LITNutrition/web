@@ -7,8 +7,8 @@
  *  - Envío del comprobante al worker → tabla order_receipts
  */
 
-const API = "https://plan-5y4.pages.dev"; // ← tu worker URL
-const CLOUDINARY_CLOUD = "tu_cloud_name";   // ← reemplazar
+const API     = "https://worker.litsuplementos.workers.dev";
+const CLOUDINARY_CLOUD = "dpfuhjysh"; 
 
 /* ── Estado global ─────────────────────────────────────────────────────────── */
 let sellerProfile  = null;   // { code, name, phone, qr_url, role }
