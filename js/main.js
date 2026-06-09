@@ -63,6 +63,7 @@ async function init() {
   renderProducts();
   updateStats();
 
+  // Manejar navegación SPA por hash
   handleRoute();
   window.addEventListener("popstate", handleRoute);
 
@@ -128,18 +129,6 @@ function applySeller() {
     waBtn.style.display = "flex";
   } else {
     waBtn.style.display = "none";
-  }
-
-  // ── QR del asesor en la seller card ──
-  const qrThumb = el("seller-qr-thumb");
-  if (qrThumb) {
-    if (seller.qr_url) {
-      qrThumb.src = seller.qr_url;
-      qrThumb.style.display = "block";
-      el("seller-qr-wrap")?.style.setProperty("display", "flex");
-    } else {
-      el("seller-qr-wrap")?.style.setProperty("display", "none");
-    }
   }
 
   el("footer-seller").style.display = "block";
@@ -218,6 +207,7 @@ function renderProducts() {
 
   initCarousel(products.length);
 
+  // Eventos
   wrap.addEventListener("click", (e) => {
     const buyBtn    = e.target.closest(".prod-buy-btn");
     const detailBtn = e.target.closest(".prod-detail-btn");
@@ -236,6 +226,7 @@ function renderProducts() {
     }
   });
 
+  // Cargar taglines en background
   products.forEach(prod => {
     fetchProductDetails(prod.id).then(details => {
       if (details?.tagline) {
@@ -263,6 +254,7 @@ function initCarousel(total) {
     if (dot) { carouselGoto(Number(dot.dataset.idx)); resetAuto(); }
   });
 
+  // Touch/swipe
   const track = el("carousel-track");
   let touchStartX = 0;
   track.addEventListener("touchstart", e => { touchStartX = e.touches[0].clientX; }, { passive: true });
@@ -271,6 +263,7 @@ function initCarousel(total) {
     if (Math.abs(dx) > 40) { carouselStep(dx < 0 ? 1 : -1); resetAuto(); }
   }, { passive: true });
 
+  // Auto-scroll
   resetAuto();
 }
 
@@ -282,10 +275,12 @@ function carouselGoto(idx) {
   carouselIdx = idx;
   const track = el("carousel-track");
   if (!track) return;
+  // Scroll suave a la card
   const cards = track.querySelectorAll(".prod-card");
   if (cards[idx]) {
     cards[idx].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   }
+  // Actualizar dots
   const dots = document.querySelectorAll(".carousel-dot");
   dots.forEach((d, i) => d.classList.toggle("active", i === idx));
 }
@@ -313,16 +308,20 @@ async function openProductPage(productId) {
   const prod = products.find(p => Number(p.id) === Number(productId));
   if (!prod) { closeProductPage(); return; }
 
-  const page    = el("product-page");
+  const page = el("product-page");
   const content = el("product-page-content");
 
+  // Mostrar skeleton mientras carga
   page.classList.add("open");
   document.body.style.overflow = "hidden";
+
   content.innerHTML = renderProductSkeleton();
 
   const details = await fetchProductDetails(productId);
+
   content.innerHTML = renderProductDetail(prod, details);
 
+  // Eventos dentro de la página
   content.querySelector("#pd-back-btn")?.addEventListener("click", () => {
     window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
     closeProductPage();
@@ -332,6 +331,7 @@ async function openProductPage(productId) {
     openBuyModal(prod);
   });
 
+  // Tabs de ingredientes/investigación
   content.querySelectorAll(".pd-tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const tab = btn.dataset.tab;
@@ -369,6 +369,7 @@ function renderProductDetail(prod, details) {
   const refs        = details?.research_refs ?? [];
 
   return `
+    <!-- Back -->
     <div class="pd-topbar">
       <button class="pd-back-btn" id="pd-back-btn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
@@ -381,6 +382,7 @@ function renderProductDetail(prod, details) {
         </div>` : ""}
     </div>
 
+    <!-- Hero del producto -->
     <div class="pd-hero">
       <div class="pd-hero-image-wrap">
         ${imgSrc
@@ -391,7 +393,7 @@ function renderProductDetail(prod, details) {
       <div class="pd-hero-content">
         ${details?.tagline ? `<div class="pd-tagline">${details.tagline}</div>` : ""}
         <h1 class="pd-name">${prod.name}</h1>
-        ${details?.format ? `<div class="pd-meta-row"><span class="pd-meta-chip">📦 ${details.format}</span>${details.net_content ? `<span class="pd-meta-chip">⚖️ ${details.net_content}</span>` : ""}</div>` : ""}
+        ${details?.format    ? `<div class="pd-meta-row"><span class="pd-meta-chip">📦 ${details.format}</span>${details.net_content ? `<span class="pd-meta-chip">⚖️ ${details.net_content}</span>` : ""}</div>` : ""}
         <div class="pd-price-row">
           <div>
             <div class="pd-price-label">Precio público</div>
@@ -406,6 +408,7 @@ function renderProductDetail(prod, details) {
       </div>
     </div>
 
+    <!-- Beneficios -->
     ${benefits.length > 0 ? `
       <div class="pd-section pd-benefits-section">
         <div class="pd-section-label">✦ Beneficios</div>
@@ -418,6 +421,7 @@ function renderProductDetail(prod, details) {
         </div>
       </div>` : ""}
 
+    <!-- Tabs: Ingredientes / Condiciones / Investigación -->
     <div class="pd-section pd-tabs-section">
       <div class="pd-tabs">
         ${ingredients.length > 0 ? `<button class="pd-tab-btn active" data-tab="ingredients">Fórmula</button>` : ""}
@@ -475,6 +479,7 @@ function renderProductDetail(prod, details) {
         </div>` : ""}
     </div>
 
+    <!-- Advertencia -->
     ${details?.warning ? `
       <div class="pd-section">
         <div class="pd-warning-box">
@@ -483,6 +488,7 @@ function renderProductDetail(prod, details) {
         </div>
       </div>` : ""}
 
+    <!-- CTA final -->
     <div class="pd-section pd-cta-section">
       <button class="pd-buy-btn-full" id="pd-buy-btn-bottom" onclick="document.getElementById('pd-buy-btn').click()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -504,7 +510,9 @@ function openBuyModal(prod) {
   const modal   = el("buy-modal");
   const content = el("buy-modal-content");
   const hasSeller = seller && seller.phone;
-  const hasQR     = seller && seller.qr_url;
+
+  const shopUrl = window.location.href.split("#")[0];
+  const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(shopUrl)}`;
 
   const waMsg  = hasSeller
     ? `Hola ${seller.name}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Esta disponible?`
@@ -540,42 +548,28 @@ function openBuyModal(prod) {
           : `<span class="bm-option-btn bm-option-btn--disabled">No disp.</span>`}
       </div>
 
-      <!-- QR de pago del asesor -->
-      <div class="bm-option ${!hasQR ? "bm-option--disabled" : ""}">
+      <!-- QR -->
+      <div class="bm-option">
         <div class="bm-option-icon bm-option-icon--qr">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h.01M14 17h.01M17 14h.01M17 17h.01M20 14h.01M20 17h.01M17 20h3"/></svg>
         </div>
         <div class="bm-option-body">
-          <div class="bm-option-title">QR de pago</div>
-          <div class="bm-option-desc">
-            ${hasQR
-              ? `Escanea el QR de <strong>${seller.name}</strong>`
-              : "Tu asesor no configuró QR de pago"}
-          </div>
+          <div class="bm-option-title">Código QR de la tienda</div>
+          <div class="bm-option-desc">Escanear desde otro dispositivo</div>
         </div>
-        ${hasQR
-          ? `<button class="bm-option-btn bm-option-btn--qr" id="bm-toggle-qr">Ver QR</button>`
-          : `<span class="bm-option-btn bm-option-btn--disabled">No disp.</span>`}
+        <button class="bm-option-btn bm-option-btn--qr" id="bm-toggle-qr">Ver QR</button>
       </div>
     </div>
 
-    <!-- Panel QR del asesor (real) -->
-    ${hasQR ? `
-      <div class="bm-qr-panel" id="bm-qr-panel" style="display:none;">
-        <img src="${seller.qr_url}"
-             alt="QR de pago de ${seller.name}"
-             class="bm-qr-img"
-             loading="lazy"
-             onerror="this.parentElement.innerHTML='<p style=\'color:var(--text-3);font-size:0.8rem;\'>No se pudo cargar el QR</p>'">
-        <p class="bm-qr-hint">Escanea para pagar a ${seller.name}</p>
-      </div>` : ""}
+    <div class="bm-qr-panel" id="bm-qr-panel" style="display:none;">
+      <img src="${qrUrl}" alt="QR tienda LIT" class="bm-qr-img" loading="lazy">
+      <p class="bm-qr-hint">Apunta la cámara para abrir la tienda${seller ? ` de ${seller.name}` : ""}</p>
+    </div>
   `;
 
-  // Toggle QR panel
-  content.querySelector("#bm-toggle-qr")?.addEventListener("click", function () {
+  content.querySelector("#bm-toggle-qr").addEventListener("click", function () {
     const panel = content.querySelector("#bm-qr-panel");
-    if (!panel) return;
-    const open = panel.style.display !== "none";
+    const open  = panel.style.display !== "none";
     panel.style.display = open ? "none" : "block";
     this.textContent    = open ? "Ver QR" : "Ocultar";
   });
