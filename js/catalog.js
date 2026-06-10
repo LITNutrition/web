@@ -127,12 +127,12 @@ function _initCarousel(total) {
   _carouselTotal = total;
   _carouselIdx   = 0;
 
-  el("carousel-prev")?.addEventListener("click", () => { _carouselStep(-1); _resetAuto(); });
-  el("carousel-next")?.addEventListener("click", () => { _carouselStep(1);  _resetAuto(); });
+  el("carousel-prev")?.addEventListener("click", () => { _carouselGoto((_carouselIdx - 1 + _carouselTotal) % _carouselTotal, true); _resetAuto(); });
+  el("carousel-next")?.addEventListener("click", () => { _carouselGoto((_carouselIdx + 1) % _carouselTotal, true); _resetAuto(); });
 
   el("carousel-dots")?.addEventListener("click", (e) => {
     const dot = e.target.closest(".carousel-dot");
-    if (dot) { _carouselGoto(Number(dot.dataset.idx)); _resetAuto(); }
+    if (dot) { _carouselGoto(Number(dot.dataset.idx), true); _resetAuto(); }
   });
 
   const track = el("carousel-track");
@@ -140,7 +140,7 @@ function _initCarousel(total) {
   track?.addEventListener("touchstart", e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   track?.addEventListener("touchend",   e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) { _carouselStep(dx < 0 ? 1 : -1); _resetAuto(); }
+    if (Math.abs(dx) > 40) { _carouselGoto((_carouselIdx + (dx < 0 ? 1 : -1) + _carouselTotal) % _carouselTotal, true); _resetAuto(); }
   }, { passive: true });
 
   _resetAuto();
@@ -150,12 +150,15 @@ function _carouselStep(dir) {
   _carouselGoto((_carouselIdx + dir + _carouselTotal) % _carouselTotal);
 }
 
-function _carouselGoto(idx) {
+function _carouselGoto(idx, scroll = false) {
   _carouselIdx = idx;
   const track = el("carousel-track");
   if (!track) return;
-  const cards = track.querySelectorAll(".prod-card");
-  cards[idx]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  // Solo hace scroll si el usuario interactuó manualmente (scroll=true)
+  if (scroll) {
+    const cards = track.querySelectorAll(".prod-card");
+    cards[idx]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }
   document.querySelectorAll(".carousel-dot").forEach((d, i) =>
     d.classList.toggle("active", i === idx)
   );
@@ -163,6 +166,7 @@ function _carouselGoto(idx) {
 
 function _resetAuto() {
   clearInterval(_carouselInterval);
+  // El auto-avance NO hace scroll, solo actualiza el dot activo
   _carouselInterval = setInterval(() => _carouselStep(1), 5000);
 }
 
