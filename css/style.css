@@ -1427,3 +1427,373 @@ img { display: block; max-width: 100%; }
   .pd-topbar { padding: 10px 16px; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   style_additions.css — LIT Nutrition Landing
+   Agregar al final de css/style.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Stock Badges (en imagen del prod-card) ───────────────────── */
+.prod-card-image-wrap {
+  position: relative;
+}
+
+.stock-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.stock-badge--ok {
+  background: rgba(122, 182, 72, 0.88);
+  color: #fff;
+}
+
+.stock-badge--low {
+  background: rgba(232, 161, 58, 0.92);
+  color: #fff;
+}
+
+.stock-badge--empty {
+  background: rgba(180, 60, 60, 0.90);
+  color: #fff;
+}
+
+/* Producto sin stock: aspecto apagado */
+.prod-card--oos {
+  opacity: 0.72;
+  filter: grayscale(25%);
+  cursor: default;
+}
+.prod-card--oos:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+/* Botón comprar deshabilitado */
+.prod-buy-btn--disabled,
+.prod-buy-btn:disabled {
+  background: var(--bg-3) !important;
+  color: var(--text-3) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* ── Stock chips en página de detalle ─────────────────────────── */
+.pd-stock-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -4px;
+}
+
+.pd-stock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+}
+
+.pd-stock-chip--ok {
+  background: rgba(122, 182, 72, 0.12);
+  color: var(--lime);
+  border: 1px solid rgba(122, 182, 72, 0.3);
+}
+
+.pd-stock-chip--low {
+  background: rgba(232, 161, 58, 0.12);
+  color: #c88a28;
+  border: 1px solid rgba(232, 161, 58, 0.3);
+}
+
+.pd-stock-chip--empty {
+  background: rgba(217, 79, 79, 0.10);
+  color: var(--red);
+  border: 1px solid rgba(217, 79, 79, 0.25);
+}
+
+/* Botón comprar deshabilitado en página de detalle */
+.pd-buy-btn--disabled {
+  background: var(--bg-3) !important;
+  color: var(--text-3) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  opacity: 0.7;
+}
+
+/* Aviso sin stock en CTA final del detalle */
+.pd-oos-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(217, 79, 79, 0.08);
+  border: 1px solid rgba(217, 79, 79, 0.22);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  color: var(--red);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* ── Sección comprobante en modal ─────────────────────────────── */
+.bm-receipt-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeUp 0.25s ease;
+}
+
+.bm-receipt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bm-receipt-sub {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  line-height: 1.55;
+  margin-top: -6px;
+}
+
+.bm-receipt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bm-receipt-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+
+/* Cantidad */
+.bm-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bm-qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+}
+.bm-qty-btn:hover { background: var(--bg-hover); border-color: var(--accent); }
+
+.bm-qty-val {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text);
+  min-width: 28px;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.bm-qty-stock {
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+
+/* Subtotal */
+.bm-subtotal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+
+.bm-subtotal-val {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+/* Upload area */
+.bm-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bm-upload-area:hover { border-color: var(--accent); background: var(--accent-sub); }
+.bm-upload-area--drag { border-color: var(--accent); background: var(--accent-sub); }
+
+.bm-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-3);
+  font-size: 0.82rem;
+  padding: 18px;
+  pointer-events: none;
+  text-align: center;
+}
+
+/* Nota WhatsApp post-upload */
+.bm-receipt-wa-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(37, 211, 102, 0.07);
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: #1a9447;
+  line-height: 1.5;
+}
+
+/* Botón enviar comprobante */
+.bm-send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--grad-accent);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  padding: 13px 24px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 3px 16px rgba(255, 107, 26, 0.3);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.bm-send-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.bm-send-btn:disabled {
+  background: var(--bg-3);
+  color: var(--text-3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Resultado del envío */
+.bm-send-result { animation: fadeUp 0.25s ease; }
+.bm-send-error {
+  background: rgba(217, 79, 79, 0.08);
+  border: 1px solid rgba(217, 79, 79, 0.22);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--red);
+  font-size: 0.82rem;
+}
+
+/* Estado éxito */
+.bm-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(122, 182, 72, 0.10);
+  border: 1px solid rgba(122, 182, 72, 0.3);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.bm-success-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.bm-success-title {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.bm-success-tx {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  margin-bottom: 4px;
+  font-family: var(--font-body);
+}
+.bm-success-hint {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+/* Botón avisar por WhatsApp post-envío */
+.bm-wa-notify-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  text-align: center;
+}
+.bm-wa-notify-btn:hover { background: #1fb059; }
+
+/* ── Spinner (por si no existe ya) ───────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(0,0,0,0.15);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
