@@ -696,6 +696,14 @@ function openBuyModal(prod) {
           </div>
         </div>
 
+        <!-- Nombre del comprador -->
+        <div class="bm-receipt-field">
+          <label class="bm-receipt-label">Tu nombre (opcional)</label>
+          <input type="text" id="bm-buyer-name" class="bm-buyer-name-input"
+            placeholder="Ej: María García" maxlength="80"
+            autocomplete="name">
+        </div>
+
         <!-- Upload comprobante -->
         <div class="bm-receipt-field">
           <label class="bm-receipt-label">Comprobante de pago</label>
@@ -828,6 +836,7 @@ function openBuyModal(prod) {
             unit_price: prod.precio_publico,
             receipt_base64: selectedBase64,
             receipt_mime: selectedMime,
+            buyer_name: (content.querySelector("#bm-buyer-name")?.value || "").trim() || null,
           }),
         });
 
