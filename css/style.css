@@ -2402,3 +2402,208 @@ img { display: block; max-width: 100%; }
   .ad-banner-cta { align-items: flex-start; }
   .header-nav { display: none; } /* En mobile se oculta, hay link en footer */
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   hero_image.css — agregar al final de style.css (o como archivo separado)
+   Imagen de fondo en el hero: public/hero/Image1.jpeg
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Imagen de fondo ────────────────────────────────────────── */
+.hero {
+  background-image: url("../public/hero/Image1.jpeg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Overlay oscuro sobre la foto para que el texto respire.
+   Ajusta el último valor (0.55) entre 0.4–0.75 según la foto. */
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 10, 4, 0.60) 0%,
+    rgba(18, 10, 4, 0.45) 50%,
+    rgba(253, 246, 238, 0.85) 100%
+  );
+  z-index: 0;
+}
+
+/* Los glows y grid van encima del overlay */
+.hero-glow,
+.hero-grid {
+  z-index: 1;
+}
+
+/* ── Texto sobre imagen: cambiar colores oscuros a claros ────── */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  color: #f0b07a; /* acento más claro para leer sobre foto */
+}
+
+.hero-title {
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* El gradient-text (TU RENDIMIENTO) se mantiene con el naranja */
+.gradient-text {
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(232, 113, 58, 0.5));
+}
+
+.hero-sub {
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Stats bar: fondo semitransparente para contraste ─────────── */
+.hero-stats {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hero-stat-val {
+  color: var(--accent);
+}
+
+.hero-stat-label {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.hero-stat-divider {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Scroll hint ─────────────────────────────────────────────── */
+.hero-scroll-hint {
+  color: rgba(255, 255, 255, 0.6);
+}
+.scroll-arrow {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Seller card: fondo opaco para no perderse en la foto ──────── */
+.hero .seller-card {
+  background: rgba(253, 246, 238, 0.92);
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ── Botones del hero ────────────────────────────────────────── */
+.btn-hero-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+}
+
+/* ── Mobile: reposicionar foco de la imagen ──────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    background-position: center center;
+  }
+  .hero-bg::before {
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 10, 4, 0.65) 0%,
+      rgba(18, 10, 4, 0.50) 50%,
+      rgba(253, 246, 238, 0.90) 100%
+    );
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   carousel_infinite.css
+   Reemplaza el comportamiento scroll-snap del carrusel de productos
+   por scroll automático infinito CSS — igual que los testimonios.
+   Agregar al final de style.css (o como archivo separado en <head>).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper: ocultar overflow y fades en bordes ─────────────── */
+#products-carousel-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+#products-carousel-wrap::before,
+#products-carousel-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+#products-carousel-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+#products-carousel-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* ── Track: scroll infinito CSS ──────────────────────────────── */
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;        /* se expande al contenido duplicado */
+  overflow-x: visible;       /* ya no necesita scroll manual */
+  scroll-snap-type: unset;
+  scroll-behavior: unset;
+  padding-bottom: 0;
+  scrollbar-width: none;
+  animation: productsScroll 30s linear infinite;
+}
+
+/* Pausa al hover — igual que testimonios */
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+/* -50% porque el contenido está duplicado en el HTML */
+@keyframes productsScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Cards: quitar scroll-snap, mantener todo lo demás ───────── */
+.prod-card {
+  flex: 0 0 300px;
+  scroll-snap-align: unset;
+}
+
+/* Ocultar controles (dots/prev/next) — ya no aplican */
+.carousel-controls {
+  display: none;
+}
+
+/* ── Mobile: velocidad un poco más rápida, cards más angostas ── */
+@media (max-width: 768px) {
+  .carousel-track {
+    animation-duration: 22s;
+  }
+  .prod-card {
+    flex: 0 0 260px;
+  }
+}

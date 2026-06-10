@@ -26,63 +26,46 @@ export function renderProducts() {
     return;
   }
 
-  wrap.innerHTML = `
-    <div class="carousel-track" id="carousel-track">
-      ${products.map((prod, i) => {
-        const imgSrc     = imgUrl(prod.image_url);
-        const outOfStock = isOutOfStock(prod.id);
-        const imageHtml  = imgSrc
-          ? `<img class="prod-card-image" src="${imgSrc}" alt="${prod.name}" loading="lazy"
-                 onerror="this.parentNode.innerHTML='<div class=\\'prod-card-image-placeholder\\'>💊</div>'">`
-          : `<div class="prod-card-image-placeholder">💊</div>`;
 
-        return `
-          <div class="prod-card${outOfStock ? " prod-card--oos" : ""}"
-               data-id="${prod.id}"
-               style="animation-delay:${i * 0.06}s;">
-            <div class="prod-card-image-wrap">
-              ${imageHtml}
-              ${stockBadgeHtml(prod.id)}
-            </div>
-            <div class="prod-card-body">
-              <div class="prod-card-name">${prod.name}</div>
-              <div class="prod-card-tagline" id="tagline-${prod.id}"></div>
-              <div class="prod-card-price-row">
-                <div>
-                  <span class="prod-card-price-label">Precio público</span>
-                  <div class="prod-card-price">${formatBs(prod.precio_publico)}</div>
-                </div>
-                <button class="prod-buy-btn${outOfStock ? " prod-buy-btn--disabled" : ""}"
-                  data-id="${prod.id}" ${outOfStock ? "disabled" : ""}>
-                  ${outOfStock ? "Sin stock" : "Comprar"}
-                </button>
-              </div>
-            </div>
-            <div class="prod-card-footer">
-              <button class="prod-detail-btn" data-id="${prod.id}">
-                Ver detalles
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
-          </div>`;
-      }).join("")}
-    </div>
-    <div class="carousel-controls">
-      <button class="carousel-btn" id="carousel-prev" aria-label="Anterior">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <div class="carousel-dots" id="carousel-dots">
-        ${products.map((_, i) =>
-          `<button class="carousel-dot${i === 0 ? " active" : ""}" data-idx="${i}" aria-label="Producto ${i+1}"></button>`
-        ).join("")}
-      </div>
-      <button class="carousel-btn" id="carousel-next" aria-label="Siguiente">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-  `;
+  // Genera las cards una vez y las duplica para scroll infinito CSS (igual que testimonios)
+  const cardsHtml = products.map((prod, i) => {
+    const imgSrc     = imgUrl(prod.image_url);
+    const outOfStock = isOutOfStock(prod.id);
+    const imageHtml  = imgSrc
+      ? `<img class="prod-card-image" src="${imgSrc}" alt="${prod.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'prod-card-image-placeholder\\'>💊</div>'">`
+      : `<div class="prod-card-image-placeholder">💊</div>`;
 
-  _initCarousel(products.length);
+    return `
+      <div class="prod-card${outOfStock ? " prod-card--oos" : ""}" data-id="${prod.id}">
+        <div class="prod-card-image-wrap">
+          ${imageHtml}
+          ${stockBadgeHtml(prod.id)}
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-name">${prod.name}</div>
+          <div class="prod-card-tagline" id="tagline-${prod.id}"></div>
+          <div class="prod-card-price-row">
+            <div>
+              <span class="prod-card-price-label">Precio público</span>
+              <div class="prod-card-price">${formatBs(prod.precio_publico)}</div>
+            </div>
+            <button class="prod-buy-btn${outOfStock ? " prod-buy-btn--disabled" : ""}"
+              data-id="${prod.id}" ${outOfStock ? "disabled" : ""}>
+              ${outOfStock ? "Sin stock" : "Comprar"}
+            </button>
+          </div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="prod-detail-btn" data-id="${prod.id}">
+            Ver detalles
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>`;
+  }).join("");
+
+  // Duplicar contenido — -50% translateX cierra el loop sin salto visible
+  wrap.innerHTML = `<div class="carousel-track" id="carousel-track">${cardsHtml}${cardsHtml}</div>`;
 
   // Delegación de eventos
   wrap.addEventListener("click", (e) => {
@@ -127,6 +110,7 @@ function _initCarousel(total) {
   _carouselTotal = total;
   _carouselIdx   = 0;
 
+  // Controles manuales — SÍ hacen scroll
   el("carousel-prev")?.addEventListener("click", () => { _carouselGoto((_carouselIdx - 1 + _carouselTotal) % _carouselTotal, true); _resetAuto(); });
   el("carousel-next")?.addEventListener("click", () => { _carouselGoto((_carouselIdx + 1) % _carouselTotal, true); _resetAuto(); });
 
@@ -146,15 +130,11 @@ function _initCarousel(total) {
   _resetAuto();
 }
 
-function _carouselStep(dir) {
-  _carouselGoto((_carouselIdx + dir + _carouselTotal) % _carouselTotal);
-}
-
+// scroll=true solo cuando el usuario interactúa manualmente
 function _carouselGoto(idx, scroll = false) {
   _carouselIdx = idx;
   const track = el("carousel-track");
   if (!track) return;
-  // Solo hace scroll si el usuario interactuó manualmente (scroll=true)
   if (scroll) {
     const cards = track.querySelectorAll(".prod-card");
     cards[idx]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
@@ -166,8 +146,8 @@ function _carouselGoto(idx, scroll = false) {
 
 function _resetAuto() {
   clearInterval(_carouselInterval);
-  // El auto-avance NO hace scroll, solo actualiza el dot activo
-  _carouselInterval = setInterval(() => _carouselStep(1), 5000);
+  // Auto-avance: solo actualiza el dot, NO hace scroll
+  _carouselInterval = setInterval(() => _carouselGoto((_carouselIdx + 1) % _carouselTotal, false), 5000);
 }
 
 /* ── Modal de compra ─────────────────────────────────────────────────────── */
