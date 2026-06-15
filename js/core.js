@@ -4,7 +4,7 @@
 
 export const API      = "https://worker.litsuplementos.workers.dev";
 export const API_FAQ  = "https://worker-faq.litsuplementos.workers.dev";
-export const APP_URL  = "https://plan-5y4.pages.dev";
+export const APP_URL  = "https://users.lit-nutrition.com";
 export const IMG_BASE = "https://plan-5y4.pages.dev";
 
 /* Estado global de la sesión de landing */
