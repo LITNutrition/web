@@ -127,8 +127,8 @@ img { display: block; max-width: 100%; }
   flex-shrink: 0;
 }
 .header-logo {
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 54px;
 }
 .header-brand-name {
   font-family: var(--font-display);
@@ -2447,11 +2447,6 @@ img { display: block; max-width: 100%; }
   color: #f0b07a; /* acento más claro para leer sobre foto */
 }
 
-.hero-title {
-  color: #ffffff;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-
 /* El gradient-text (TU RENDIMIENTO) se mantiene con el naranja */
 .gradient-text {
   background: var(--grad-accent);
@@ -2466,7 +2461,7 @@ img { display: block; max-width: 100%; }
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 
-/* ── Stats bar: fondo semitransparente para contraste ─────────── */
+/* Stats bar: fondo semitransparente para contraste */
 .hero-stats {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.2);
