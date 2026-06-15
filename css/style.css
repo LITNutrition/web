@@ -4,7 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
-/* ── Variables ─────────────────────────────────────────────────────────── */
+/* Variables */
 :root {
   --bg:           #fdf6ee;
   --bg-2:         #f7ede0;
@@ -43,7 +43,7 @@
   --header-h:     64px;
 }
 
-/* ── Reset ─────────────────────────────────────────────────────────────── */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
 body {
@@ -57,7 +57,7 @@ body {
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 
-/* ── App Loader ─────────────────────────────────────────────────────────── */
+/* App Loader */
 .app-loader {
   position: fixed;
   inset: 0;
@@ -95,7 +95,7 @@ img { display: block; max-width: 100%; }
   to   { width: 100%; }
 }
 
-/* ── Header ─────────────────────────────────────────────────────────────── */
+/* Header */
 .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -185,7 +185,7 @@ img { display: block; max-width: 100%; }
 }
 .header-cta:hover { opacity: 0.9; transform: translateY(-1px); }
 
-/* ── Hero ───────────────────────────────────────────────────────────────── */
+/* Hero */
 .hero {
   min-height: 100vh;
   padding-top: var(--header-h);
@@ -420,7 +420,7 @@ img { display: block; max-width: 100%; }
   50%       { transform: rotate(45deg) translateY(4px); }
 }
 
-/* ── Catalog Section ────────────────────────────────────────────────────── */
+/* Catalog Section */
 .catalog-section {
   padding: 80px 0;
   background: var(--bg);
@@ -453,7 +453,7 @@ img { display: block; max-width: 100%; }
   opacity: 0.8;
 }
 
-/* ── CARRUSEL ───────────────────────────────────────────────────────────── */
+/* CARRUSEL */
 #products-carousel-wrap {
   position: relative;
 }
@@ -651,7 +651,7 @@ img { display: block; max-width: 100%; }
   animation: shimmer 1.5s ease infinite;
 }
 
-/* ── Banners section ────────────────────────────────────────────────────── */
+/* Banners section */
 .banners-section {
   padding: 40px 0 80px;
   background: var(--bg);
@@ -732,7 +732,7 @@ img { display: block; max-width: 100%; }
 }
 .banner-btn-secondary:hover { border-color: var(--blue); background: rgba(74,158,255,0.06); }
 
-/* ── Footer ─────────────────────────────────────────────────────────────── */
+/* Footer */
 .site-footer {
   background: var(--bg-3);
   border-top: 1px solid var(--border);
@@ -774,7 +774,7 @@ img { display: block; max-width: 100%; }
   color: var(--text-3);
 }
 
-/* ── Modal de compra ─────────────────────────────────────────────────────── */
+/* Modal de compra */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -918,7 +918,7 @@ img { display: block; max-width: 100%; }
 .bm-qr-img { border-radius: 12px; border: 1px solid var(--border); width: auto; height: auto; display: inline-block; }
 .bm-qr-hint { font-size: 0.75rem; color: var(--text-3); margin-top: 8px; }
 
-/* ── PÁGINA DE DETALLE DE PRODUCTO ────────────────────────────────────────── */
+/* PÁGINA DE DETALLE DE PRODUCTO */
 .product-page {
   position: fixed;
   inset: 0;
@@ -1364,7 +1364,7 @@ img { display: block; max-width: 100%; }
   animation: shimmer 1.4s ease infinite;
 }
 
-/* ── Empty state ──────────────────────────────────────────────────────────── */
+/* Empty state */
 .empty-state {
   text-align: center;
   padding: 60px 24px;
@@ -1373,7 +1373,7 @@ img { display: block; max-width: 100%; }
 .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
 .empty-state p { font-size: 0.9rem; }
 
-/* ── Animations ─────────────────────────────────────────────────────────── */
+/* Animations */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1384,7 +1384,7 @@ img { display: block; max-width: 100%; }
 }
 .fade-up { animation: fadeUp 0.5s ease both; }
 
-/* ── Responsive ─────────────────────────────────────────────────────────── */
+/* Responsive */ 
 @media (max-width: 768px) {
   .header-inner { padding: 0 16px; }
   .header-brand-name span { display: none; }
@@ -1425,12 +1425,7 @@ img { display: block; max-width: 100%; }
   .pd-topbar { padding: 10px 16px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   style_additions.css — LIT Nutrition Landing
-   Agregar al final de css/style.css
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Stock Badges (en imagen del prod-card) ───────────────────── */
+/* Stock Badges (en imagen del prod-card) */
 .prod-card-image-wrap {
   position: relative;
 }
@@ -1485,7 +1480,7 @@ img { display: block; max-width: 100%; }
   box-shadow: none !important;
 }
 
-/* ── Stock chips en página de detalle ─────────────────────────── */
+/* Stock chips en página de detalle */
 .pd-stock-row {
   display: flex;
   align-items: center;
@@ -1546,7 +1541,7 @@ img { display: block; max-width: 100%; }
   max-width: 360px;
 }
 
-/* ── Sección comprobante en modal ─────────────────────────────── */
+/* Sección comprobante en modal */
 .bm-receipt-section {
   display: flex;
   flex-direction: column;
@@ -1799,7 +1794,6 @@ img { display: block; max-width: 100%; }
 }
 .bm-wa-notify-btn:hover { background: #1fb059; }
 
-/* ── Spinner (por si no existe ya) ───────────────────────────── */
 .spinner {
   display: inline-block;
   width: 18px;
@@ -1812,14 +1806,7 @@ img { display: block; max-width: 100%; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ═══════════════════════════════════════════════════════════════
-   style_v2.css — LIT Nutrition
-   Agregar al final de css/style.css
-   Nuevas secciones: Navegación inter-página, Testimonios,
-   Banners publicitarios intermedios, FAQ page.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Nav inter-página en el header ───────────────────────────── */
+/* Nav inter-página en el header */
 .header-nav {
   display: flex;
   align-items: center;
@@ -1848,7 +1835,7 @@ img { display: block; max-width: 100%; }
   background: var(--accent-sub);
 }
 
-/* ── Sección testimonios ─────────────────────────────────────── */
+/* Sección testimonios */
 .testimonials-section {
   padding: 80px 0;
   background: var(--bg-2);
@@ -1970,7 +1957,7 @@ img { display: block; max-width: 100%; }
   width: fit-content;
 }
 
-/* ── Banners publicitarios intermedios ───────────────────────── */
+/* Banners publicitarios intermedios */
 .ad-banner-section {
   padding: 0 0 60px;
   background: var(--bg);
@@ -2139,10 +2126,6 @@ img { display: block; max-width: 100%; }
   color: var(--text-3);
   line-height: 1.4;
 }
-
-/* ══════════════════════════════════════════════════════════════
-   FAQ PAGE — faq.html
-   ══════════════════════════════════════════════════════════════ */
 
 /* Hero de FAQ */
 .faq-hero {
@@ -2350,7 +2333,7 @@ img { display: block; max-width: 100%; }
   animation: shimmer 1.4s ease infinite;
 }
 
-/* ── CTA de contacto en FAQ ──────────────────────────────────── */
+/* CTA de contacto en FAQ */
 .faq-contact-section {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
@@ -2395,7 +2378,7 @@ img { display: block; max-width: 100%; }
   color: var(--text-3);
 }
 
-/* ── Responsive FAQ ──────────────────────────────────────────── */
+/* Responsive FAQ */
 @media (max-width: 768px) {
   .ad-mini-banners { grid-template-columns: 1fr; }
   .ad-banner-full-inner { flex-direction: column; align-items: flex-start; }
@@ -2403,12 +2386,7 @@ img { display: block; max-width: 100%; }
   .header-nav { display: none; } /* En mobile se oculta, hay link en footer */
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   hero_image.css — agregar al final de style.css (o como archivo separado)
-   Imagen de fondo en el hero: public/hero/Image1.jpeg
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Imagen de fondo ────────────────────────────────────────── */
+/* Imagen de fondo */
 .hero {
   background-image: url("../public/hero/Image1.jpeg");
   background-size: cover;
@@ -2447,6 +2425,11 @@ img { display: block; max-width: 100%; }
   color: #f0b07a; /* acento más claro para leer sobre foto */
 }
 
+.hero-title {
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(218, 119, 119, 0.4);
+}
+
 /* El gradient-text (TU RENDIMIENTO) se mantiene con el naranja */
 .gradient-text {
   background: var(--grad-accent);
@@ -2481,7 +2464,7 @@ img { display: block; max-width: 100%; }
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ── Scroll hint ─────────────────────────────────────────────── */
+/* Scroll hint */
 .hero-scroll-hint {
   color: rgba(255, 255, 255, 0.6);
 }
@@ -2489,7 +2472,7 @@ img { display: block; max-width: 100%; }
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* ── Seller card: fondo opaco para no perderse en la foto ──────── */
+/* Seller card: fondo opaco para no perderse en la foto */
 .hero .seller-card {
   background: rgba(253, 246, 238, 0.92);
   border-color: rgba(255, 255, 255, 0.3);
@@ -2497,7 +2480,7 @@ img { display: block; max-width: 100%; }
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* ── Botones del hero ────────────────────────────────────────── */
+/* Botones del hero */
 .btn-hero-secondary {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
@@ -2511,7 +2494,7 @@ img { display: block; max-width: 100%; }
   color: #ffffff;
 }
 
-/* ── Mobile: reposicionar foco de la imagen ──────────────────── */
+/* Mobile: reposicionar foco de la imagen */
 @media (max-width: 768px) {
   .hero {
     background-position: center center;
@@ -2526,14 +2509,7 @@ img { display: block; max-width: 100%; }
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   carousel_infinite.css
-   Reemplaza el comportamiento scroll-snap del carrusel de productos
-   por scroll automático infinito CSS — igual que los testimonios.
-   Agregar al final de style.css (o como archivo separado en <head>).
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Wrapper: ocultar overflow y fades en bordes ─────────────── */
+/* Wrapper: ocultar overflow y fades en bordes */
 #products-carousel-wrap {
   position: relative;
   overflow: hidden;
@@ -2558,7 +2534,7 @@ img { display: block; max-width: 100%; }
   background: linear-gradient(to left, var(--bg), transparent);
 }
 
-/* ── Track: scroll infinito CSS ──────────────────────────────── */
+/* Track: scroll infinito CSS */
 .carousel-track {
   display: flex;
   gap: 20px;
@@ -2582,7 +2558,7 @@ img { display: block; max-width: 100%; }
   to   { transform: translateX(-50%); }
 }
 
-/* ── Cards: quitar scroll-snap, mantener todo lo demás ───────── */
+/* Cards: quitar scroll-snap, mantener todo lo demás */
 .prod-card {
   flex: 0 0 300px;
   scroll-snap-align: unset;
