@@ -7,6 +7,11 @@ export const API_FAQ  = "https://worker-faq.litsuplementos.workers.dev";
 export const APP_URL  = "https://users.lit-nutrition.com";
 export const IMG_BASE = "https://plan-5y4.pages.dev";
 
+/* ── Control global del límite de stock ───────────────────────────────────
+   1 = habilitado (comportamiento normal)
+   0 = deshabilitado (no se muestran badges, "Sin stock", límites, etc.) */
+export const STOCK_LIMIT_ENABLED = 0;
+
 /* Estado global de la sesión de landing */
 export const state = {
   seller:      null,   // perfil del seller (o null si no hay invite)
@@ -107,17 +112,20 @@ export async function loadLandingData() {
 
 /* Helpers de stock */
 export function getStock(productId) {
+  if (!STOCK_LIMIT_ENABLED) return null;
   if (!state.inviteCode || !state.seller) return null;
   const qty = state.sellerStock[String(productId)];
   return qty !== undefined ? Number(qty) : 0;
 }
 
 export function isOutOfStock(productId) {
+  if (!STOCK_LIMIT_ENABLED) return false;
   const qty = getStock(productId);
   return qty !== null && qty === 0;
 }
 
 export function stockBadgeHtml(productId) {
+  if (!STOCK_LIMIT_ENABLED) return "";
   const qty = getStock(productId);
   if (qty === null) return "";
   if (qty === 0)   return `<div class="stock-badge stock-badge--empty">Sin stock</div>`;
