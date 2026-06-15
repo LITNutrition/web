@@ -1,16 +1,15 @@
 /**
- * js/catalog.js — LIT Nutrition
- * Carrusel de productos y modal de compra con comprobante de pago.
+ * js/catalog.js
  */
 
 import {
-  state, el, api, API,
+  state, el, api, API_FAQ,
   imgUrl, formatBs, buildWALink,
   getStock, isOutOfStock, stockBadgeHtml,
 } from "./core.js";
 import { navigateToProduct } from "./product-page.js";
 
-/* ── Render del carrusel ─────────────────────────────────────────────────── */
+/* Render del carrusel */
 export function renderProducts() {
   const wrap     = el("products-carousel-wrap");
   const products = state.catalog?.products ?? [];
@@ -29,9 +28,9 @@ export function renderProducts() {
 
   // Genera las cards una vez y las duplica para scroll infinito CSS (igual que testimonios)
   const cardsHtml = products.map((prod, i) => {
-    const imgSrc     = imgUrl(prod.image_url);
+    const imgSrc = imgUrl(prod.image_url);
     const outOfStock = isOutOfStock(prod.id);
-    const imageHtml  = imgSrc
+    const imageHtml = imgSrc
       ? `<img class="prod-card-image" src="${imgSrc}" alt="${prod.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'prod-card-image-placeholder\\'>💊</div>'">`
       : `<div class="prod-card-image-placeholder">💊</div>`;
 
@@ -88,7 +87,7 @@ export function renderProducts() {
 
   // Carga lazy de taglines
   products.forEach(prod => {
-    api.get(`/api/public/product-details?product_id=${prod.id}`).then(data => {
+    api.get(`/api/public/product-details?product_id=${prod.id}`, API_FAQ).then(data => {
       if (data.details?.tagline) {
         const tEl = document.getElementById(`tagline-${prod.id}`);
         if (tEl) tEl.textContent = data.details.tagline;
@@ -101,7 +100,7 @@ export function renderProducts() {
   if (statEl) statEl.textContent = products.length;
 }
 
-/* ── Carrusel ────────────────────────────────────────────────────────────── */
+/* Carrusel */
 let _carouselIdx      = 0;
 let _carouselTotal    = 0;
 let _carouselInterval = null;
@@ -122,7 +121,7 @@ function _initCarousel(total) {
   const track = el("carousel-track");
   let touchStartX = 0;
   track?.addEventListener("touchstart", e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  track?.addEventListener("touchend",   e => {
+  track?.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(dx) > 40) { _carouselGoto((_carouselIdx + (dx < 0 ? 1 : -1) + _carouselTotal) % _carouselTotal, true); _resetAuto(); }
   }, { passive: true });
@@ -150,15 +149,15 @@ function _resetAuto() {
   _carouselInterval = setInterval(() => _carouselGoto((_carouselIdx + 1) % _carouselTotal, false), 5000);
 }
 
-/* ── Modal de compra ─────────────────────────────────────────────────────── */
+/* Modal de compra */
 export function openBuyModal(prod) {
   const modal   = el("buy-modal");
   const content = el("buy-modal-content");
   if (!modal || !content) return;
 
   const hasSeller = state.seller && state.seller.phone;
-  const hasQR     = state.seller && state.seller.qr_url;
-  const stockQty  = getStock(prod.id);
+  const hasQR = state.seller && state.seller.qr_url;
+  const stockQty = getStock(prod.id);
 
   const waMsg  = hasSeller
     ? `Hola ${state.seller.name}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`
@@ -315,12 +314,12 @@ function _renderModalContent(prod, { hasSeller, hasQR, stockQty, waLink }) {
   `;
 }
 
-/* ── Lógica de comprobante ───────────────────────────────────────────────── */
+/* Lógica de comprobante */
 function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
-  let qty            = 1;
-  const maxQty       = stockQty !== null ? stockQty : 99;
+  let qty = 1;
+  const maxQty = stockQty !== null ? stockQty : 99;
   let selectedBase64 = null;
-  let selectedMime   = null;
+  let selectedMime = null;
 
   const updateSubtotal = () => {
     const sub = content.querySelector("#bm-subtotal");
@@ -355,16 +354,16 @@ function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
 
   function handleFile(file) {
     if (!file.type.startsWith("image/")) { showResult("Solo se aceptan imágenes.", "error"); return; }
-    if (file.size > 5 * 1024 * 1024)    { showResult("Máximo 5MB.", "error"); return; }
+    if (file.size > 5 * 1024 * 1024){ showResult("Máximo 5MB.", "error"); return; }
     selectedMime = file.type;
     const reader = new FileReader();
     reader.onload = (ev) => {
       selectedBase64 = ev.target.result;
-      const preview     = content.querySelector("#bm-preview-img");
+      const preview = content.querySelector("#bm-preview-img");
       const placeholder = content.querySelector("#bm-upload-placeholder");
       if (preview && placeholder) {
         preview.src = selectedBase64;
-        preview.style.display     = "block";
+        preview.style.display = "block";
         placeholder.style.display = "none";
       }
       const waNote = content.querySelector("#bm-receipt-wa-note");
@@ -382,15 +381,15 @@ function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
 
     try {
       const data = await api.post("/api/public/order", {
-        seller_code:    state.seller.code,
-        product_id:     prod.id,
-        product_name:   prod.name,
-        quantity:       qty,
-        unit_price:     prod.precio_publico,
+        seller_code: state.seller.code,
+        product_id: prod.id,
+        product_name: prod.name,
+        quantity: qty,
+        unit_price: prod.precio_publico,
         receipt_base64: selectedBase64,
-        receipt_mime:   selectedMime,
-        buyer_name:     (content.querySelector("#bm-buyer-name")?.value || "").trim() || null,
-      });
+        receipt_mime: selectedMime,
+        buyer_name: (content.querySelector("#bm-buyer-name")?.value || "").trim() || null,
+      }, API_FAQ);
 
       if (data.ok) {
         const { tx_id, subtotal, created_at_bolivia } = data;

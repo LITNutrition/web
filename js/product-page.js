@@ -1,16 +1,16 @@
 /**
- * js/product-page.js — LIT Nutrition
+ * js/product-page.js
  * Página de detalle de producto como overlay SPA.
  * Se activa via hash #producto/ID y vuelve al catálogo con back/ESC.
  */
 
 import {
-  state, el, api, API,
+  state, el, api, API_FAQ,
   imgUrl, formatBs, buildWALink,
   getStock, isOutOfStock,
 } from "./core.js";
 
-/* ── Routing por hash ───────────────────────────────────────────────────── */
+/* Routing por hash */
 export function initProductPageRouting(onOpenBuyModal) {
   _openBuyModalFn = onOpenBuyModal;
 
@@ -41,7 +41,7 @@ function _pushHomeHash() {
   window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
 }
 
-/* ── Abrir / cerrar ─────────────────────────────────────────────────────── */
+/* Abrir / cerrar */
 async function openProductPage(productId) {
   const prod = (state.catalog?.products ?? []).find(p => Number(p.id) === Number(productId));
   if (!prod) { closeProductPage(); return; }
@@ -54,7 +54,7 @@ async function openProductPage(productId) {
   document.body.style.overflow = "hidden";
   content.innerHTML = renderSkeleton();
 
-  const data = await api.get(`/api/public/product-details?product_id=${productId}`);
+  const data = await api.get(`/api/public/product-details?product_id=${productId}`, API_FAQ);
   const details = data.ok ? data.details : null;
 
   content.innerHTML = renderProductDetail(prod, details);
@@ -68,7 +68,7 @@ export function closeProductPage() {
   document.body.style.overflow = "";
 }
 
-/* ── Eventos internos de la página de detalle ──────────────────────────── */
+/* Eventos internos de la página de detalle */
 function bindProductPageEvents(prod) {
   const content = el("product-page-content");
   if (!content) return;
@@ -94,7 +94,7 @@ function bindProductPageEvents(prod) {
   });
 }
 
-/* ── Skeleton ────────────────────────────────────────────────────────────── */
+/* Skeleton */
 function renderSkeleton() {
   return `
     <div class="pd-skeleton">
@@ -108,16 +108,16 @@ function renderSkeleton() {
     </div>`;
 }
 
-/* ── Render completo ─────────────────────────────────────────────────────── */
+/* Render completo */
 function renderProductDetail(prod, details) {
-  const imgSrc     = imgUrl(prod.image_url);
+  const imgSrc = imgUrl(prod.image_url);
   const outOfStock = isOutOfStock(prod.id);
-  const stockQty   = getStock(prod.id);
+  const stockQty = getStock(prod.id);
 
-  const benefits    = details?.benefits      ?? [];
+  const benefits = details?.benefits      ?? [];
   const ingredients = details?.ingredients   ?? [];
-  const conditions  = details?.conditions    ?? [];
-  const refs        = details?.research_refs ?? [];
+  const conditions = details?.conditions    ?? [];
+  const refs = details?.research_refs ?? [];
 
   const buyBtnHtml = outOfStock
     ? `<button class="pd-buy-btn pd-buy-btn--disabled" disabled>Sin stock</button>`
