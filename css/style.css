@@ -24,6 +24,7 @@
   --red:          #d94f4f;
   --blue:         #3a7bd5;
 
+  --text-giant:   #fffaf5;
   --text:         #2a1f14;
   --text-2:       #6b4f38;
   --text-3:       #a8896e;
@@ -311,7 +312,7 @@ img { display: block; max-width: 100%; }
   font-size: clamp(3.5rem, 10vw, 7rem);
   line-height: 0.9;
   letter-spacing: 0.04em;
-  color: var(--text);
+  color: var(--text-giant);
   margin-bottom: 20px;
 }
 .gradient-text {
@@ -470,11 +471,8 @@ img { display: block; max-width: 100%; }
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.carousel-track::-webkit-scrollbar { display: none; }
 
 .prod-card {
-  flex: 0 0 300px;
-  scroll-snap-align: start;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -590,48 +588,6 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.02em;
 }
 .prod-detail-btn:hover { color: var(--accent); background: var(--accent-sub); }
-
-/* Controles del carrusel */
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 24px;
-}
-.carousel-btn {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-  flex-shrink: 0;
-}
-.carousel-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-sub); }
-
-.carousel-dots {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-}
-.carousel-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--border);
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
-  padding: 0;
-}
-.carousel-dot.active {
-  background: var(--accent);
-  transform: scale(1.3);
-}
 
 /* Skeleton */
 .skeleton-card {
@@ -1384,7 +1340,7 @@ img { display: block; max-width: 100%; }
 }
 .fade-up { animation: fadeUp 0.5s ease both; }
 
-/* Responsive */
+/* Responsive */ 
 @media (max-width: 768px) {
   .header-inner { padding: 0 16px; }
   .header-brand-name span { display: none; }
@@ -2512,69 +2468,22 @@ img { display: block; max-width: 100%; }
 /* Wrapper: ocultar overflow y fades en bordes */
 #products-carousel-wrap {
   position: relative;
-  overflow: hidden;
 }
 
-#products-carousel-wrap::before,
-#products-carousel-wrap::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 80px;
-  z-index: 2;
-  pointer-events: none;
-}
-#products-carousel-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, var(--bg), transparent);
-}
-#products-carousel-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, var(--bg), transparent);
-}
-
-/* Track: scroll infinito CSS */
-.carousel-track {
-  display: flex;
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  width: max-content;        /* se expande al contenido duplicado */
-  overflow-x: visible;       /* ya no necesita scroll manual */
-  scroll-snap-type: unset;
-  scroll-behavior: unset;
-  padding-bottom: 0;
-  scrollbar-width: none;
-  animation: productsScroll 30s linear infinite;
 }
 
-/* Pausa al hover — igual que testimonios */
-.carousel-track:hover {
-  animation-play-state: paused;
-}
-
-/* -50% porque el contenido está duplicado en el HTML */
-@keyframes productsScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* Cards: quitar scroll-snap, mantener todo lo demás */
-.prod-card {
-  flex: 0 0 300px;
-  scroll-snap-align: unset;
-}
-
-/* Ocultar controles (dots/prev/next) — ya no aplican */
-.carousel-controls {
-  display: none;
-}
-
-/* ── Mobile: velocidad un poco más rápida, cards más angostas ── */
-@media (max-width: 768px) {
-  .carousel-track {
-    animation-duration: 22s;
+@media (max-width: 900px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .prod-card {
-    flex: 0 0 260px;
+}
+
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr;
   }
 }

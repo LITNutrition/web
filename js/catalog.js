@@ -1,6 +1,4 @@
-/**
- * js/catalog.js
- */
+/** js/catalog.js */
 
 import {
   state, el, api, API_FAQ,
@@ -11,7 +9,7 @@ import { navigateToProduct } from "./product-page.js";
 
 /* Render del carrusel */
 export function renderProducts() {
-  const wrap     = el("products-carousel-wrap");
+  const wrap = el("products-carousel-wrap");
   const products = state.catalog?.products ?? [];
 
   if (!wrap) return;
@@ -64,7 +62,7 @@ export function renderProducts() {
   }).join("");
 
   // Duplicar contenido — -50% translateX cierra el loop sin salto visible
-  wrap.innerHTML = `<div class="carousel-track" id="carousel-track">${cardsHtml}${cardsHtml}</div>`;
+  wrap.innerHTML = `<div class="products-grid">${cardsHtml}</div>`;
 
   // Delegación de eventos
   wrap.addEventListener("click", (e) => {
@@ -98,55 +96,6 @@ export function renderProducts() {
   // Stat de productos
   const statEl = el("stat-products");
   if (statEl) statEl.textContent = products.length;
-}
-
-/* Carrusel */
-let _carouselIdx      = 0;
-let _carouselTotal    = 0;
-let _carouselInterval = null;
-
-function _initCarousel(total) {
-  _carouselTotal = total;
-  _carouselIdx   = 0;
-
-  // Controles manuales — SÍ hacen scroll
-  el("carousel-prev")?.addEventListener("click", () => { _carouselGoto((_carouselIdx - 1 + _carouselTotal) % _carouselTotal, true); _resetAuto(); });
-  el("carousel-next")?.addEventListener("click", () => { _carouselGoto((_carouselIdx + 1) % _carouselTotal, true); _resetAuto(); });
-
-  el("carousel-dots")?.addEventListener("click", (e) => {
-    const dot = e.target.closest(".carousel-dot");
-    if (dot) { _carouselGoto(Number(dot.dataset.idx), true); _resetAuto(); }
-  });
-
-  const track = el("carousel-track");
-  let touchStartX = 0;
-  track?.addEventListener("touchstart", e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  track?.addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) { _carouselGoto((_carouselIdx + (dx < 0 ? 1 : -1) + _carouselTotal) % _carouselTotal, true); _resetAuto(); }
-  }, { passive: true });
-
-  _resetAuto();
-}
-
-// scroll=true solo cuando el usuario interactúa manualmente
-function _carouselGoto(idx, scroll = false) {
-  _carouselIdx = idx;
-  const track = el("carousel-track");
-  if (!track) return;
-  if (scroll) {
-    const cards = track.querySelectorAll(".prod-card");
-    cards[idx]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  }
-  document.querySelectorAll(".carousel-dot").forEach((d, i) =>
-    d.classList.toggle("active", i === idx)
-  );
-}
-
-function _resetAuto() {
-  clearInterval(_carouselInterval);
-  // Auto-avance: solo actualiza el dot, NO hace scroll
-  _carouselInterval = setInterval(() => _carouselGoto((_carouselIdx + 1) % _carouselTotal, false), 5000);
 }
 
 /* Modal de compra */
