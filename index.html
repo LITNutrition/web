@@ -12,13 +12,11 @@
 </head>
 <body>
 
-  <!-- ── Loader ── -->
   <div id="app-loader" class="app-loader">
     <div class="loader-logo">LIT</div>
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
 
-  <!-- ── Header ── -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
 
@@ -29,7 +27,6 @@
         <span class="header-brand-name">NUTRITION</span>
       </div>
 
-      <!-- Nav inter-página -->
       <nav class="header-nav" aria-label="Navegación principal">
         <a href="#" class="header-nav-link active" id="nav-inicio" data-view="home">Inicio</a>
         <a href="#" class="header-nav-link" id="nav-faq" data-view="faq">FAQ</a>
@@ -45,9 +42,6 @@
     </div>
   </header>
 
-  <!-- ══════════════════════════════════════
-       HERO
-       ══════════════════════════════════════ -->
   <section class="hero" id="hero">
     <div class="hero-bg">
       <div class="hero-glow hero-glow-1"></div>
@@ -98,9 +92,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════
-       CATÁLOGO
-       ══════════════════════════════════════ -->
   <section class="catalog-section" id="catalogo">
     <div class="section-inner">
       <div class="section-header">
@@ -120,9 +111,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════
-       BANNER PUBLICITARIO PRINCIPAL
-       ══════════════════════════════════════ -->
   <section class="ad-banner-section">
     <div class="ad-banner-full">
       <div class="ad-banner-full-glow"></div>
@@ -185,9 +173,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════
-       TESTIMONIOS
-       ══════════════════════════════════════ -->
   <section class="testimonials-section">
     <div class="section-inner">
       <div class="section-header">
@@ -359,14 +344,10 @@
           </div>
           <div class="testimonial-product-tag">✨ Colagen Premium</div>
         </div>
-
-      </div><!-- /testimonials-track -->
+      </div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════
-       CTA BANNERS (Login / Registro)
-       ══════════════════════════════════════ -->
   <section class="banners-section">
     <div class="section-inner banners-grid">
 
@@ -401,9 +382,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════
-       SECCIÓN FAQ (SPA — oculta por defecto)
-       ══════════════════════════════════════ -->
   <div id="view-faq" style="display:none;">
 
     <!-- Hero FAQ -->
@@ -430,7 +408,6 @@
       </div>
     </section>
 
-    <!-- Lista FAQ -->
     <section class="faq-section">
       <div class="faq-inner">
         <div id="faq-list">
@@ -442,7 +419,6 @@
       </div>
     </section>
 
-    <!-- CTA contacto -->
     <section class="faq-contact-section">
       <div class="faq-contact-inner">
         <div class="faq-contact-title">¿No encontraste tu respuesta?</div>
@@ -456,7 +432,6 @@
           Consultar por WhatsApp
         </a>
 
-        <!-- Seller card (si hay invite) -->
         <div class="seller-card" id="seller-card" style="display:none;">
           <div class="seller-avatar" id="seller-avatar">?</div>
           <div class="seller-info">
@@ -479,11 +454,8 @@
       </div>
     </section>
 
-  </div><!-- /#view-faq -->
+  </div>
 
-  <!-- ══════════════════════════════════════
-       FOOTER
-       ══════════════════════════════════════ -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -498,18 +470,12 @@
     </div>
   </footer>
 
-  <!-- ══════════════════════════════════════
-       OVERLAY: Página de detalle (SPA)
-       ══════════════════════════════════════ -->
   <div class="product-page" id="product-page">
     <div class="product-page-inner" id="product-page-content">
-      <!-- Inyectado por product-page.js -->
+
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════
-       MODAL DE COMPRA
-       ══════════════════════════════════════ -->
   <div class="modal-overlay" id="buy-modal">
     <div class="modal-box">
       <button class="modal-close" id="buy-modal-close">✕</button>
@@ -518,6 +484,5 @@
   </div>
 
   <script type="module" src="js/main.js"></script>
-  <!-- faq.html redirige aquí; este archivo ya no es necesario como página separada -->
 </body>
 </html>
