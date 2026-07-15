@@ -14,7 +14,7 @@ export function renderHeader() {
   header.innerHTML = `
     <div class="header-inner">
       <div class="header-brand">
-        <img src="https://plan-5y4.pages.dev/public/icon/image/logo.png"
+        <img src="https://lit-nutrition.com/public/icon/image/logo.png"
              alt="Nutrition" class="header-logo"
              onerror="this.style.display='none'">
         <span class="header-brand-name">NUTRITION</span>
