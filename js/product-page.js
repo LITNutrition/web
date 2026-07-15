@@ -58,6 +58,7 @@ async function openProductPage(productId) {
   const details = data.ok ? data.details : null;
 
   content.innerHTML = renderProductDetail(prod, details);
+  lucide.createIcons();
   bindProductPageEvents(prod, details);
 }
 
@@ -108,6 +109,31 @@ function renderSkeleton() {
     </div>`;
 }
 
+/* ── Benefits carousel helpers ────────────────────────────────────────────── */
+const BENEFIT_ICONS = ["sparkles", "shield-check", "zap", "heart", "star", "check-circle", "leaf", "flame"];
+
+function _buildBenefitsCards(benefits) {
+  if (benefits.length <= 3) {
+    const padded = [...benefits];
+    while (padded.length < 3) padded.push("");
+    return padded.map((b, i) => _benefitCard(b, i)).join("");
+  }
+  const fullChunks = Math.ceil(benefits.length / 3) * 3;
+  const cycled = [];
+  for (let i = 0; i < fullChunks; i++) cycled.push(benefits[i % benefits.length]);
+  return cycled.map((b, i) => _benefitCard(b, i)).join("");
+}
+
+function _benefitCard(text, idx) {
+  if (!text) return `<div class="pd-benefit-card pd-benefit-card--empty"></div>`;
+  const icon = BENEFIT_ICONS[idx % BENEFIT_ICONS.length];
+  return `
+    <div class="pd-benefit-card">
+      <div class="pd-benefit-icon"><i data-lucide="${icon}"></i></div>
+      <span>${text}</span>
+    </div>`;
+}
+
 /* Render completo */
 function renderProductDetail(prod, details) {
   const imgSrc = imgUrl(prod.image_url);
@@ -122,17 +148,17 @@ function renderProductDetail(prod, details) {
   const buyBtnHtml = outOfStock
     ? `<button class="pd-buy-btn pd-buy-btn--disabled" disabled>Sin stock</button>`
     : `<button class="pd-buy-btn" id="pd-buy-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <i data-lucide="shopping-bag"></i>
         Pedir ahora
       </button>`;
 
   const stockIndicatorHtml = stockQty !== null ? `
     <div class="pd-stock-row">
       ${outOfStock
-        ? `<span class="pd-stock-chip pd-stock-chip--empty">⚠️ Sin stock disponible</span>`
+        ? `<span class="pd-stock-chip pd-stock-chip--empty"><i data-lucide="triangle-alert"></i> Sin stock disponible</span>`
         : stockQty <= 3
-          ? `<span class="pd-stock-chip pd-stock-chip--low">🔥 Últimas ${stockQty} unidades</span>`
-          : `<span class="pd-stock-chip pd-stock-chip--ok">✓ En stock</span>`
+          ? `<span class="pd-stock-chip pd-stock-chip--low"><i data-lucide="flame"></i> Últimas ${stockQty} unidades</span>`
+          : `<span class="pd-stock-chip pd-stock-chip--ok"><i data-lucide="check"></i> En stock</span>`
       }
     </div>` : "";
 
@@ -144,7 +170,7 @@ function renderProductDetail(prod, details) {
   return `
     <div class="pd-topbar">
       <button class="pd-back-btn" id="pd-back-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        <i data-lucide="chevron-left"></i>
         Volver al catálogo
       </button>
       ${state.seller ? `
@@ -158,7 +184,7 @@ function renderProductDetail(prod, details) {
       <div class="pd-hero-image-wrap">
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${prod.name}" class="pd-hero-image" loading="eager">`
-          : `<div class="pd-hero-image-placeholder">💊</div>`}
+          : `<div class="pd-hero-image-placeholder"><i data-lucide="pill"></i></div>`}
         <div class="pd-hero-image-overlay"></div>
       </div>
       <div class="pd-hero-content">
@@ -166,8 +192,8 @@ function renderProductDetail(prod, details) {
         <h1 class="pd-name">${prod.name}</h1>
         ${details?.format ? `
           <div class="pd-meta-row">
-            <span class="pd-meta-chip">📦 ${details.format}</span>
-            ${details.net_content ? `<span class="pd-meta-chip">⚖️ ${details.net_content}</span>` : ""}
+            <span class="pd-meta-chip"><i data-lucide="package"></i> ${details.format}</span>
+            ${details.net_content ? `<span class="pd-meta-chip"><i data-lucide="scale"></i> ${details.net_content}</span>` : ""}
           </div>` : ""}
         ${stockIndicatorHtml}
         <div class="pd-price-row">
@@ -178,20 +204,14 @@ function renderProductDetail(prod, details) {
           ${buyBtnHtml}
         </div>
         ${details?.description ? `<p class="pd-description">${details.description}</p>` : ""}
+        ${benefits.length > 0 ? `
+          <div class="pd-benefits-carousel">
+            <div class="pd-benefits-track${benefits.length > 3 ? " scroll" : ""}">
+              ${_buildBenefitsCards(benefits)}
+            </div>
+          </div>` : ""}
       </div>
     </div>
-
-    ${benefits.length > 0 ? `
-      <div class="pd-section pd-benefits-section">
-        <div class="pd-section-label">✦ Beneficios</div>
-        <div class="pd-benefits-grid">
-          ${benefits.map(b => `
-            <div class="pd-benefit-item">
-              <div class="pd-benefit-dot"></div>
-              <span>${b}</span>
-            </div>`).join("")}
-        </div>
-      </div>` : ""}
 
     <div class="pd-section pd-tabs-section">
       <div class="pd-tabs">
@@ -221,11 +241,11 @@ function renderProductDetail(prod, details) {
           <div class="pd-conditions-grid">
             ${conditions.map(c => `
               <div class="pd-condition-tag">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <i data-lucide="check"></i>
                 ${c}
               </div>`).join("")}
           </div>
-          <p class="pd-disclaimer">⚠️ Este producto no reemplaza tratamientos médicos. Consulte a su médico.</p>
+          <p class="pd-disclaimer"><i data-lucide="triangle-alert"></i> Este producto no reemplaza tratamientos médicos. Consulte a su médico.</p>
         </div>` : ""}
 
       ${hasThirdTab ? `
@@ -236,7 +256,7 @@ function renderProductDetail(prod, details) {
               <div class="pd-ref">
                 <div class="pd-ref-title">${r.title}</div>
                 <div class="pd-ref-source">${r.source}</div>
-                ${r.url ? `<a href="${r.url}" target="_blank" rel="noopener" class="pd-ref-link">Ver estudio →</a>` : ""}
+                ${r.url ? `<a href="${r.url}" target="_blank" rel="noopener" class="pd-ref-link">Ver estudio <i data-lucide="arrow-right"></i></a>` : ""}
               </div>`).join("")}
           </div>
         </div>` : ""}
@@ -244,7 +264,7 @@ function renderProductDetail(prod, details) {
       ${hasUsage ? `
         <div class="pd-tab-panel" data-tab="usage">
           <div class="pd-usage-box">
-            <div class="pd-usage-icon">📋</div>
+            <div class="pd-usage-icon"><i data-lucide="clipboard"></i></div>
             <div class="pd-usage-text">${details.usage}</div>
           </div>
         </div>` : ""}
@@ -253,7 +273,7 @@ function renderProductDetail(prod, details) {
     ${details?.warning ? `
       <div class="pd-section">
         <div class="pd-warning-box">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <i data-lucide="triangle-alert"></i>
           <p>${details.warning}</p>
         </div>
       </div>` : ""}
@@ -261,11 +281,11 @@ function renderProductDetail(prod, details) {
     <div class="pd-section pd-cta-section">
       ${outOfStock
         ? `<div class="pd-oos-notice">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+             <i data-lucide="circle-alert"></i>
              Este asesor no tiene stock disponible en este momento.
            </div>`
         : `<button class="pd-buy-btn-full" onclick="document.getElementById('pd-buy-btn').click()">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+             <i data-lucide="shopping-bag"></i>
              Pedir ${prod.name}
            </button>`
       }
@@ -288,5 +308,6 @@ function renderProductDetail(prod, details) {
           </div>`;
       })()}
     </div>
+
   `;
 }

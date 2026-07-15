@@ -18,7 +18,7 @@ export function renderProducts() {
   if (products.length === 0) {
     wrap.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-icon"><i data-lucide="search"></i></div>
         <p>No hay productos disponibles en este momento.</p>
       </div>`;
     return;
@@ -30,8 +30,8 @@ export function renderProducts() {
     const imgSrc = imgUrl(prod.image_url);
     const outOfStock = isOutOfStock(prod.id);
     const imageHtml = imgSrc
-      ? `<img class="prod-card-image" src="${imgSrc}" alt="${prod.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'prod-card-image-placeholder\\'>💊</div>'">`
-      : `<div class="prod-card-image-placeholder">💊</div>`;
+      ? `<img class="prod-card-image" src="${imgSrc}" alt="${prod.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'prod-card-image-placeholder\\'><i data-lucide=\\'pill\\'></i></div>'">`
+      : `<div class="prod-card-image-placeholder"><i data-lucide="pill"></i></div>`;
 
     return `
       <div class="prod-card${outOfStock ? " prod-card--oos" : ""}" data-id="${prod.id}">
@@ -56,7 +56,7 @@ export function renderProducts() {
         <div class="prod-card-footer">
           <button class="prod-detail-btn" data-id="${prod.id}">
             Ver detalles
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <i data-lucide="chevron-right"></i>
           </button>
         </div>
       </div>`;
@@ -64,6 +64,7 @@ export function renderProducts() {
 
   // Duplicar contenido — -50% translateX cierra el loop sin salto visible
   wrap.innerHTML = `<div class="products-grid">${cardsHtml}</div>`;
+  lucide.createIcons();
 
   // Delegación de eventos
   wrap.addEventListener("click", (e) => {
@@ -117,6 +118,7 @@ export function openBuyModal(prod) {
   const waLink = contact?.phone ? buildWALink(contact.phone, waMsg) : null;
 
   content.innerHTML = _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink, isInviteFlow });
+  lucide.createIcons();
 
   // Toggle QR
   content.querySelector("#bm-toggle-qr")?.addEventListener("click", function () {
@@ -158,20 +160,20 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
     ? `<a class="bm-option-btn bm-option-btn--wa" href="${waLink}" target="_blank" rel="noopener">Abrir →</a>`
     : `
       <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
-        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59157358199', `Hola ${contactName}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59157358199</a>
-        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59178299604', `Hola ${contactName}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59178299604</a>
+        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59157358199', `Hola! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59157358199</a>
+        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59178299604', `Hola! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59178299604</a>
       </div>`;
 
   return `
     <div class="bm-product">
       ${prod.image_url
         ? `<img src="${imgUrl(prod.image_url)}" alt="${prod.name}" class="bm-product-img" onerror="this.style.display='none'">`
-        : `<div class="bm-product-icon">💊</div>`}
+        : `<div class="bm-product-icon"><i data-lucide="pill"></i></div>`}
       <div class="bm-product-info">
         <div class="bm-product-name">${prod.name}</div>
         <div class="bm-product-price">${formatBs(prod.precio_publico)}</div>
-        ${stockQty !== null && stockQty <= 3 && stockQty > 0
-          ? `<div style="font-size:0.72rem;color:#e8a23a;margin-top:3px;">🔥 Últimas ${stockQty} unidades</div>`
+          ${stockQty !== null && stockQty <= 3 && stockQty > 0
+          ? `<div style="font-size:0.72rem;color:#e8a23a;margin-top:3px;"><i data-lucide="flame"></i> Últimas ${stockQty} unidades</div>`
           : ""}
       </div>
     </div>
@@ -194,7 +196,7 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
       ${isInviteFlow ? `
         <div class="bm-option ${!hasQR ? "bm-option--disabled" : ""}">
           <div class="bm-option-icon bm-option-icon--qr">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h.01M14 17h.01M17 14h.01M17 17h.01M20 14h.01M20 17h.01M17 20h3"/></svg>
+            <i data-lucide="qr-code"></i>
           </div>
           <div class="bm-option-body">
             <div class="bm-option-title">QR de pago</div>
@@ -220,7 +222,7 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
       <div class="bm-divider" style="margin-top:20px;"></div>
       <div class="bm-receipt-section">
         <div class="bm-receipt-header">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <i data-lucide="file-text"></i>
           Si ya cancelaste, sube tu comprobante de pago
         </div>
         <p class="bm-receipt-sub">El asesor verificará el pago y confirmará tu pedido.</p>
@@ -228,9 +230,9 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
         <div class="bm-receipt-field">
           <label class="bm-receipt-label">Cantidad</label>
           <div class="bm-qty-row">
-            <button class="bm-qty-btn" id="bm-qty-minus">−</button>
+            <button class="bm-qty-btn" id="bm-qty-minus"><i data-lucide="minus"></i></button>
             <span class="bm-qty-val" id="bm-qty-val">1</span>
-            <button class="bm-qty-btn" id="bm-qty-plus">+</button>
+            <button class="bm-qty-btn" id="bm-qty-plus"><i data-lucide="plus"></i></button>
             <span class="bm-qty-stock" id="bm-qty-stock">${stockQty !== null ? `(máx. ${stockQty})` : ""}</span>
           </div>
         </div>
@@ -253,7 +255,7 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
           <div class="bm-upload-area" id="bm-upload-area">
             <input type="file" id="bm-file-input" accept="image/*" style="display:none;">
             <div class="bm-upload-placeholder" id="bm-upload-placeholder">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <i data-lucide="upload"></i>
               <span>Toca para subir imagen</span>
               <span style="font-size:0.72rem;color:var(--text-3);">JPG, PNG o WEBP — máx. 5MB</span>
             </div>
@@ -268,7 +270,7 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
           </div>` : ""}
 
         <button class="bm-send-btn" id="bm-send-btn" disabled>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <i data-lucide="send"></i>
           Enviar comprobante
         </button>
 
@@ -368,7 +370,7 @@ function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
 
         showResult(`
           <div class="bm-success">
-            <div class="bm-success-icon">✓</div>
+            <div class="bm-success-icon"><i data-lucide="check"></i></div>
             <div>
               <div class="bm-success-title">¡Comprobante enviado!</div>
               <div class="bm-success-tx">Nº transacción: <strong>${tx_id}</strong></div>
@@ -390,7 +392,7 @@ function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
     } catch (e) {
       showResult(`No se pudo enviar: ${e.message}`, "error");
       sendBtn.disabled = false;
-      sendBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar comprobante`;
+      sendBtn.innerHTML = `<i data-lucide="send"></i> Enviar comprobante`;
     }
   });
 
@@ -399,5 +401,6 @@ function _bindReceiptLogic(content, prod, { hasSeller, hasQR, stockQty }) {
     if (!r) return;
     r.innerHTML = type === "success" ? html : `<div class="bm-send-error">${html}</div>`;
     r.style.display = "block";
+    lucide.createIcons();
   }
 }

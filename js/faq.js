@@ -19,7 +19,7 @@ export async function loadFAQ() {
     if (!data.ok || !data.items?.length) {
       wrap.innerHTML = `
         <div class="faq-empty">
-          <div class="faq-empty-icon">🤔</div>
+          <div class="faq-empty-icon"><i data-lucide="circle-question-mark"></i></div>
           <p>Aún no hay preguntas frecuentes. Vuelve pronto.</p>
         </div>`;
       return;
@@ -29,6 +29,7 @@ export async function loadFAQ() {
     const grouped = _groupByCategory(data.items);
     wrap.innerHTML = _renderGroups(grouped);
     _bindAccordion(wrap);
+    lucide.createIcons();
 
   } catch (e) {
     wrap.innerHTML = `
@@ -62,9 +63,7 @@ function _renderGroups(grouped) {
             <button class="faq-question" aria-expanded="false">
               <span>${item.question}</span>
               <div class="faq-chevron">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
+                <i data-lucide="chevron-down"></i>
               </div>
             </button>
             <div class="faq-answer" aria-hidden="true">
