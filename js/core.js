@@ -20,6 +20,18 @@ export const state = {
   inviteCode:  null,   // string o null
 };
 
+export const FALLBACK_CONTACT = {
+  name: "LIT Nutrition",
+  phone: "+59157358199",
+  phones: ["+59157358199", "+59178299604"],
+  qr_url: null,
+};
+
+export function getActiveContact() {
+  if (state.inviteCode && state.seller?.phone) return state.seller;
+  return FALLBACK_CONTACT;
+}
+
 /* Leer y persistir el inviteCode. Se lee de ?invite=CODE en la URL. En navegación interna (SPA entre páginas) se propaga via preserveInvite(). */
 export function initInviteCode() {
   const params = new URLSearchParams(window.location.search);

@@ -3,7 +3,7 @@
  * Maneja vista Home y vista FAQ sin recargar la página.
  */
 
-import { loadLandingData, initHeaderScroll, hideLoader, el, state, buildWALink } from "./core.js";
+import { loadLandingData, initHeaderScroll, hideLoader, el, state, buildWALink, getActiveContact } from "./core.js";
 import { applySeller }                                    from "./seller.js";
 import { renderProducts, openBuyModal, initModalEvents }  from "./catalog.js";
 import { initProductPageRouting, closeProductPage }       from "./product-page.js";
@@ -52,11 +52,33 @@ function _applyFAQSeller() {
   const waBtn       = el("faq-wa-btn");
   const sub         = el("faq-contact-sub");
   const noSellerMsg = el("faq-no-seller-note");
+  const contact     = getActiveContact();
 
-  if (state.seller?.phone) {
-    const msg = `Hola ${state.seller.name}! Tengo una consulta sobre los productos LIT Nutrition.`;
-    if (waBtn) waBtn.href = buildWALink(state.seller.phone, msg);
-    if (sub)   sub.textContent = `Escríbele directamente a ${state.seller.name} y te responde a la brevedad.`;
+  if (state.inviteCode && contact?.phone) {
+    const msg = `Hola ${contact.name}! Tengo una consulta sobre los productos LIT Nutrition.`;
+    if (waBtn) {
+      waBtn.href = buildWALink(contact.phone, msg);
+      waBtn.style.display = "inline-flex";
+    }
+    if (sub) {
+      sub.innerHTML = `Escríbele directamente a <strong>${contact.name}</strong> y te responde a la brevedad.`;
+    }
+    if (noSellerMsg) noSellerMsg.style.display = "none";
+  } else if (!state.inviteCode) {
+    if (waBtn) waBtn.style.display = "none";
+    if (sub) {
+      const msg = "Hola LIT Nutrition! Tengo una consulta sobre los productos LIT Nutrition.";
+      sub.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+          <a href="${buildWALink('+59157358199', msg)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:600;">
+            WhatsApp +59157358199
+          </a>
+          <a href="${buildWALink('+59178299604', msg)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:600;">
+            WhatsApp +59178299604
+          </a>
+        </div>`;
+    }
+    if (noSellerMsg) noSellerMsg.style.display = "none";
   } else {
     if (waBtn) waBtn.style.display = "none";
     if (noSellerMsg) noSellerMsg.style.display = "block";
