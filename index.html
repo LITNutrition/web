@@ -19,6 +19,13 @@
     <div class="loader-logo">LIT</div>
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
+  <script>
+    if (sessionStorage.getItem('lit-loaded')) {
+      document.getElementById('app-loader')?.classList.add('hidden');
+    } else {
+      sessionStorage.setItem('lit-loaded', '1');
+    }
+  </script>
 
   <section class="hero" id="hero">
     <div class="hero-bg">
@@ -98,7 +105,6 @@
       <div class="ad-banner-full-glow"></div>
       <div class="ad-banner-full-inner">
         <div class="ad-banner-copy">
-          <div class="ad-banner-eyebrow">Por qué LIT Nutrition</div>
           <div class="ad-banner-headline">
             CIENCIA EN<br>
             CADA <span class="hl-accent">CÁPSULA</span>
@@ -363,12 +369,6 @@
 
     </div>
   </section>
-
-  <div class="product-page" id="product-page">
-    <div class="product-page-inner" id="product-page-content">
-
-    </div>
-  </div>
 
   <div class="modal-overlay" id="buy-modal">
     <div class="modal-box">

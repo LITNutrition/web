@@ -8,13 +8,6 @@ import { applySeller } from "./seller.js";
 import { renderFooter, socialLinksHTML } from "./footer.js";
 import { renderHeader } from "./header.js";
 
-if (sessionStorage.getItem('lit-loaded')) {
-  const loader = document.getElementById('app-loader');
-  if (loader) loader.classList.add('hidden');
-} else {
-  sessionStorage.setItem('lit-loaded', '1');
-}
-
 renderHeader();
 initHeaderScroll("site-header");
 

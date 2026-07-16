@@ -6,16 +6,8 @@
 import { loadLandingData, initHeaderScroll, hideLoader, el, state, renderNotFound } from "./core.js";
 import { applySeller }                                    from "./seller.js";
 import { renderProducts, openBuyModal, initModalEvents }  from "./catalog.js";
-import { initProductPageRouting, closeProductPage }       from "./product-page.js";
 import { renderFooter }                                   from "./footer.js";
 import { renderHeader }                                   from "./header.js";
-
-if (sessionStorage.getItem('lit-loaded')) {
-  const loader = document.getElementById('app-loader');
-  if (loader) loader.classList.add('hidden');
-} else {
-  sessionStorage.setItem('lit-loaded', '1');
-}
 
 /* ── Propagar invite code a los links del header ──────────────────────────── */
 function _propagateInvite() {
@@ -35,12 +27,6 @@ initHeaderScroll("site-header");
 
 /* ── Modal ───────────────────────────────────────────────────────────────── */
 initModalEvents();
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && el("product-page")?.classList.contains("open")) {
-    window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
-    closeProductPage();
-  }
-});
 
 /* ── Bootstrap ───────────────────────────────────────────────────────────── */
 async function init() {
@@ -60,7 +46,6 @@ async function init() {
   _propagateInvite();
   renderFooter();
   renderProducts();
-  initProductPageRouting(openBuyModal);
 
   // Inicializar iconos Lucide en el HTML estático
   lucide.createIcons();

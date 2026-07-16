@@ -1,101 +1,70 @@
 /**
- * js/product-page.js
- * Página de detalle de producto como overlay SPA.
- * Se activa via hash #producto/ID y vuelve al catálogo con back/ESC.
+ * js/product-main.js — LIT Nutrition · product.html
+ * Página standalone de detalle de producto.
  */
 
 import {
   state, el, api, API_FAQ,
   imgUrl, formatBs, buildWALink,
   getStock, isOutOfStock,
+  loadLandingData, initInviteCode, inviteQuery,
+  hideLoader, renderNotFound, initHeaderScroll,
 } from "./core.js";
+import { applySeller }          from "./seller.js";
+import { openBuyModal, initModalEvents } from "./catalog.js";
+import { renderHeader }         from "./header.js";
+import { renderFooter }         from "./footer.js";
 
-/* Routing por hash */
-export function initProductPageRouting(onOpenBuyModal) {
-  _openBuyModalFn = onOpenBuyModal;
+renderHeader();
+initHeaderScroll("site-header");
 
-  handleRoute();
-  window.addEventListener("popstate", handleRoute);
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && el("product-page")?.classList.contains("open")) {
-      _pushHomeHash();
-      closeProductPage();
-    }
-  });
-}
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const productId = Number(params.get("id"));
 
-let _openBuyModalFn = null;
+  if (!productId) {
+    renderNotFound();
+    hideLoader("app-loader", 0);
+    return;
+  }
 
-function handleRoute() {
-  const match = window.location.hash.match(/^#producto\/(\d+)$/);
-  if (match) openProductPage(Number(match[1]));
-  else closeProductPage();
-}
+  await loadLandingData();
 
-export function navigateToProduct(prod) {
-  window.history.pushState({}, "", `${window.location.pathname}${window.location.search}#producto/${prod.id}`);
-  openProductPage(prod.id);
-}
+  if (state.invalidInvite) {
+    renderNotFound();
+    hideLoader("app-loader", 0);
+    return;
+  }
 
-function _pushHomeHash() {
-  window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
-}
+  applySeller();
+  renderFooter();
+  initModalEvents();
 
-/* Abrir / cerrar */
-async function openProductPage(productId) {
-  const prod = (state.catalog?.products ?? []).find(p => Number(p.id) === Number(productId));
-  if (!prod) { closeProductPage(); return; }
+  const prod = (state.catalog?.products ?? []).find(p => Number(p.id) === productId);
+  if (!prod) {
+    renderNotFound();
+    hideLoader("app-loader", 0);
+    return;
+  }
 
-  const page    = el("product-page");
+  document.title = `${prod.name} — LIT Nutrition`;
+
   const content = el("product-page-content");
-  if (!page || !content) return;
+  if (!content) return;
 
-  page.classList.add("open");
-  document.body.style.overflow = "hidden";
   content.innerHTML = renderSkeleton();
+  lucide.createIcons();
 
   const data = await api.get(`/api/public/product-details?product_id=${productId}`, API_FAQ);
   const details = data.ok ? data.details : null;
 
   content.innerHTML = renderProductDetail(prod, details);
   lucide.createIcons();
-  bindProductPageEvents(prod, details);
+  bindProductPageEvents(prod);
+
+  hideLoader("app-loader", 600);
 }
 
-export function closeProductPage() {
-  const page = el("product-page");
-  if (!page) return;
-  page.classList.remove("open");
-  document.body.style.overflow = "";
-}
-
-/* Eventos internos de la página de detalle */
-function bindProductPageEvents(prod) {
-  const content = el("product-page-content");
-  if (!content) return;
-
-  content.querySelector("#pd-back-btn")?.addEventListener("click", () => {
-    _pushHomeHash();
-    closeProductPage();
-  });
-
-  content.querySelector("#pd-buy-btn")?.addEventListener("click", () => {
-    if (!isOutOfStock(prod.id) && _openBuyModalFn) _openBuyModalFn(prod);
-  });
-
-  // Tabs
-  content.querySelectorAll(".pd-tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const tab = btn.dataset.tab;
-      content.querySelectorAll(".pd-tab-btn")
-        .forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-      content.querySelectorAll(".pd-tab-panel")
-        .forEach(p => p.classList.toggle("active", p.dataset.tab === tab));
-    });
-  });
-}
-
-/* Skeleton */
 function renderSkeleton() {
   return `
     <div class="pd-skeleton">
@@ -109,7 +78,29 @@ function renderSkeleton() {
     </div>`;
 }
 
-/* ── Benefits carousel helpers ────────────────────────────────────────────── */
+function bindProductPageEvents(prod) {
+  const content = el("product-page-content");
+  if (!content) return;
+
+  content.querySelector("#pd-back-btn")?.addEventListener("click", () => {
+    window.location.href = `index.html${inviteQuery()}`;
+  });
+
+  content.querySelector("#pd-buy-btn")?.addEventListener("click", () => {
+    if (!isOutOfStock(prod.id)) openBuyModal(prod);
+  });
+
+  content.querySelectorAll(".pd-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      content.querySelectorAll(".pd-tab-btn")
+        .forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      content.querySelectorAll(".pd-tab-panel")
+        .forEach(p => p.classList.toggle("active", p.dataset.tab === tab));
+    });
+  });
+}
+
 const BENEFIT_ICONS = ["sparkles", "shield-check", "zap", "heart", "star", "check-circle", "leaf", "flame"];
 
 function _buildBenefitsCards(benefits) {
@@ -134,7 +125,6 @@ function _benefitCard(text, idx) {
     </div>`;
 }
 
-/* Render completo */
 function renderProductDetail(prod, details) {
   const imgSrc = imgUrl(prod.image_url);
   const outOfStock = isOutOfStock(prod.id);
@@ -169,10 +159,6 @@ function renderProductDetail(prod, details) {
 
   return `
     <div class="pd-topbar">
-      <button class="pd-back-btn" id="pd-back-btn">
-        <i data-lucide="chevron-left"></i>
-        Volver al catálogo
-      </button>
       ${state.seller ? `
         <div class="pd-seller-mini">
           <span class="pd-seller-dot"></span>
@@ -182,6 +168,10 @@ function renderProductDetail(prod, details) {
 
     <div class="pd-hero">
       <div class="pd-hero-image-wrap">
+        <button class="pd-back-btn-floating" id="pd-back-btn">
+          <i data-lucide="chevron-left"></i>
+          Volver
+        </button>
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${prod.name}" class="pd-hero-image" loading="eager">`
           : `<div class="pd-hero-image-placeholder"><i data-lucide="pill"></i></div>`}
@@ -316,3 +306,5 @@ function renderProductDetail(prod, details) {
 
   `;
 }
+
+init();

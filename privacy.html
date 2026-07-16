@@ -18,6 +18,13 @@
     <div class="loader-logo">LIT</div>
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
+  <script>
+    if (sessionStorage.getItem('lit-loaded')) {
+      document.getElementById('app-loader')?.classList.add('hidden');
+    } else {
+      sessionStorage.setItem('lit-loaded', '1');
+    }
+  </script>
 
   <section class="privacy-hero">
     <div class="privacy-hero-inner">

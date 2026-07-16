@@ -4,8 +4,8 @@ import {
   state, el, api, API_FAQ,
   imgUrl, formatBs, buildWALink,
   getStock, isOutOfStock, stockBadgeHtml,
+  inviteQuery,
 } from "./core.js";
-import { navigateToProduct } from "./product-page.js";
 
 /* Render del carrusel */
 export function renderProducts() {
@@ -78,7 +78,7 @@ export function renderProducts() {
     }
     if (card) {
       const prod = products.find(p => Number(p.id) === Number(card.dataset.id));
-      if (prod) navigateToProduct(prod);
+      if (prod) window.location.href = `product.html?id=${prod.id}${inviteQuery()}`;
     }
   });
 
@@ -169,7 +169,7 @@ function _renderModalContent(prod, { sellerName, hasSeller, hasQR, stockQty, waL
         <div class="bm-product-name">${prod.name}</div>
         <div class="bm-product-price">${formatBs(prod.precio_publico)}</div>
           ${stockQty !== null && stockQty <= 3 && stockQty > 0
-          ? `<div style="font-size:0.72rem;color:#e8a23a;margin-top:3px;"><i data-lucide="flame"></i> Últimas ${stockQty} unidades</div>`
+          ? `<div class="bm-low-stock"><i data-lucide="flame"></i> Últimas ${stockQty} unidades</div>`
           : ""}
       </div>
     </div>

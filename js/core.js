@@ -160,14 +160,14 @@ export function renderNotFound() {
       <img src="https://lit-nutrition.com/public/icon/image/logo.png"
            alt="LIT Nutrition" style="width:80px;height:auto;margin-bottom:24px;opacity:0.85;"
            onerror="this.style.display='none'">
-      <h1 style="font-size:1.6rem;color:var(--text,#1a1a2e);margin:0 0 12px;letter-spacing:0.04em;">
+      <h1 style="font-size:1.6rem;color:var(--text,#f5f0eb);margin:0 0 12px;letter-spacing:0.04em;">
         Vendedor no encontrado
       </h1>
-      <p style="font-size:0.95rem;color:var(--text-2,#666);max-width:400px;margin:0 0 28px;line-height:1.5;">
+      <p style="font-size:0.95rem;color:var(--text-2,#b0a89e);max-width:400px;margin:0 0 28px;line-height:1.5;">
         El enlace que usaste no es v&aacute;lido o el vendedor no est&aacute; activo en este momento.
       </p>
       <a href="/"
-         style="display:inline-block;background:var(--accent,#ff6b1a);color:#fff;padding:12px 28px;border-radius:12px;font-weight:600;font-size:0.9rem;letter-spacing:0.04em;text-decoration:none;transition:opacity 0.15s;">
+         style="display:inline-block;background:var(--accent,#ff8c00);color:#fff;padding:12px 28px;border-radius:12px;font-weight:600;font-size:0.9rem;letter-spacing:0.04em;text-decoration:none;transition:opacity 0.15s;">
         Ir a LIT Nutrition
       </a>
     </div>`;
