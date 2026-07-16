@@ -4,7 +4,6 @@ import {
   state, el, api, API_FAQ,
   imgUrl, formatBs, buildWALink,
   getStock, isOutOfStock, stockBadgeHtml,
-  getActiveContact,
 } from "./core.js";
 import { navigateToProduct } from "./product-page.js";
 
@@ -38,6 +37,12 @@ export function renderProducts() {
         <div class="prod-card-image-wrap">
           ${imageHtml}
           ${stockBadgeHtml(prod.id)}
+          <div class="prod-card-overlay">
+            <span class="prod-detail-overlay">
+              Ver detalles
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
         </div>
         <div class="prod-card-body">
           <div class="prod-card-name">${prod.name}</div>
@@ -53,12 +58,6 @@ export function renderProducts() {
             </button>
           </div>
         </div>
-        <div class="prod-card-footer">
-          <button class="prod-detail-btn" data-id="${prod.id}">
-            Ver detalles
-            <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
       </div>`;
   }).join("");
 
@@ -68,9 +67,8 @@ export function renderProducts() {
 
   // Delegación de eventos
   wrap.addEventListener("click", (e) => {
-    const buyBtn    = e.target.closest(".prod-buy-btn");
-    const detailBtn = e.target.closest(".prod-detail-btn");
-    const card      = e.target.closest(".prod-card");
+    const buyBtn = e.target.closest(".prod-buy-btn");
+    const card   = e.target.closest(".prod-card");
 
     if (buyBtn && !buyBtn.disabled) {
       e.stopPropagation();
@@ -78,9 +76,8 @@ export function renderProducts() {
       if (prod) openBuyModal(prod);
       return;
     }
-    if (detailBtn || card) {
-      const id   = Number((detailBtn || card).dataset.id);
-      const prod = products.find(p => Number(p.id) === id);
+    if (card) {
+      const prod = products.find(p => Number(p.id) === Number(card.dataset.id));
       if (prod) navigateToProduct(prod);
     }
   });
@@ -106,18 +103,18 @@ export function openBuyModal(prod) {
   const content = el("buy-modal-content");
   if (!modal || !content) return;
 
-  const contact = getActiveContact();
   const isInviteFlow = Boolean(state.inviteCode);
   const hasSeller = Boolean(isInviteFlow && state.seller?.phone);
   const hasQR = Boolean(isInviteFlow && state.seller?.qr_url);
   const stockQty = getStock(prod.id);
 
-  const waMsg  = contact?.phone
-    ? `Hola ${contact.name}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`
-    : "";
-  const waLink = contact?.phone ? buildWALink(contact.phone, waMsg) : null;
+  const sellerName = state.seller?.name || "LIT Nutrition";
+  const waMsg = hasSeller
+    ? `Hola ${sellerName}! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`
+    : `Hola! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`;
+  const waLink = hasSeller ? buildWALink(state.seller.phone, waMsg) : null;
 
-  content.innerHTML = _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink, isInviteFlow });
+  content.innerHTML = _renderModalContent(prod, { sellerName, hasSeller, hasQR, stockQty, waLink, waMsg, isInviteFlow });
   lucide.createIcons();
 
   // Toggle QR
@@ -151,18 +148,17 @@ export function initModalEvents() {
 }
 
 /* ── HTML del modal ──────────────────────────────────────────────────────── */
-function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink, isInviteFlow }) {
+function _renderModalContent(prod, { sellerName, hasSeller, hasQR, stockQty, waLink, waMsg, isInviteFlow }) {
   const WA_ICON = `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
-  const contactName = contact?.name || "LIT Nutrition";
-  const phones = (contact?.phones || [contact?.phone]).filter(Boolean);
-  const phonesText = phones.length > 1 ? `${phones[0]} o ${phones[1]}` : phones[0] || "";
-  const waLinksHtml = isInviteFlow
+  const waLinksHtml = hasSeller
     ? `<a class="bm-option-btn bm-option-btn--wa" href="${waLink}" target="_blank" rel="noopener">Abrir →</a>`
-    : `
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
-        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59157358199', `Hola! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59157358199</a>
-        <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59178299604', `Hola! Vi tu tienda LIT Nutrition y quiero comprar *"${prod.name}"* (${formatBs(prod.precio_publico)}). Está disponible?`)}" target="_blank" rel="noopener">+59178299604</a>
-      </div>`;
+    : !isInviteFlow
+      ? `
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+          <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59157358199', waMsg)}" target="_blank" rel="noopener">+59157358199</a>
+          <a class="bm-option-btn bm-option-btn--wa" href="${buildWALink('+59178299604', waMsg)}" target="_blank" rel="noopener">+59178299604</a>
+        </div>`
+      : `<span class="bm-option-btn bm-option-btn--disabled">No disp.</span>`;
 
   return `
     <div class="bm-product">
@@ -182,13 +178,13 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
     <p class="bm-label">¿Cómo quieres ordenar?</p>
 
     <div class="bm-options">
-      <div class="bm-option ${!contact?.phone ? "bm-option--disabled" : ""}">
+      <div class="bm-option ${(isInviteFlow && !hasSeller) ? "bm-option--disabled" : ""}">
         <div class="bm-option-icon bm-option-icon--wa">${WA_ICON}</div>
         <div class="bm-option-body">
           <div class="bm-option-title">Pedir por WhatsApp</div>
-          <div class="bm-option-desc">${hasSeller ? `Escríbele a <strong>${contactName}</strong>` : phonesText ? `Escríbenos a <strong>${phonesText}</strong>` : "Tu asesor no configuró WhatsApp"}</div>
+          <div class="bm-option-desc">${hasSeller ? `Escríbele a <strong>${sellerName}</strong>` : !isInviteFlow ? `Escríbenos a <strong>+59157358199 o +59178299604</strong>` : "Tu asesor no configuró WhatsApp"}</div>
         </div>
-        ${contact?.phone
+        ${hasSeller || !isInviteFlow
           ? waLinksHtml
           : `<span class="bm-option-btn bm-option-btn--disabled">No disp.</span>`}
       </div>
@@ -201,7 +197,7 @@ function _renderModalContent(prod, { contact, hasSeller, hasQR, stockQty, waLink
           <div class="bm-option-body">
             <div class="bm-option-title">QR de pago</div>
             <div class="bm-option-desc">
-              ${hasQR ? `Escanea el QR de <strong>${contactName}</strong>` : "Tu asesor no configuró QR de pago"}
+              ${hasQR ? `Escanea el QR de <strong>${sellerName}</strong>` : "Tu asesor no configuró QR de pago"}
             </div>
           </div>
           ${hasQR

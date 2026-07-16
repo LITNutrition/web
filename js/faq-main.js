@@ -3,7 +3,7 @@
  * Entry point: carga minimal (seller + FAQ + contacto).
  */
 
-import { loadLandingData, initHeaderScroll, hideLoader, el, state, buildWALink, getActiveContact } from "./core.js";
+import { loadLandingData, initHeaderScroll, hideLoader, el, state, buildWALink, renderNotFound } from "./core.js";
 import { applySeller }          from "./seller.js";
 import { loadFAQ, initFAQSearch } from "./faq.js";
 import { renderFooter }          from "./footer.js";
@@ -24,19 +24,21 @@ function _applyFAQSeller() {
   const waBtn       = el("faq-wa-btn");
   const sub         = el("faq-contact-sub");
   const noSellerMsg = el("faq-no-seller-note");
-  const contact     = getActiveContact();
+  const isInviteFlow = Boolean(state.inviteCode);
+  const hasSeller = Boolean(isInviteFlow && state.seller?.phone);
+  const sellerName = state.seller?.name || "LIT Nutrition";
 
-  if (state.inviteCode && contact?.phone) {
-    const msg = `Hola ${contact.name}! Tengo una consulta sobre los productos LIT Nutrition.`;
+  if (hasSeller) {
+    const msg = `Hola ${sellerName}! Tengo una consulta sobre los productos LIT Nutrition.`;
     if (waBtn) {
-      waBtn.href = buildWALink(contact.phone, msg);
+      waBtn.href = buildWALink(state.seller.phone, msg);
       waBtn.style.display = "inline-flex";
     }
     if (sub) {
-      sub.innerHTML = `Escríbele directamente a <strong>${contact.name}</strong> y te responde a la brevedad.`;
+      sub.innerHTML = `Escríbele directamente a <strong>${sellerName}</strong> y te responde a la brevedad.`;
     }
     if (noSellerMsg) noSellerMsg.style.display = "none";
-  } else if (!state.inviteCode) {
+  } else if (!isInviteFlow) {
     if (waBtn) waBtn.style.display = "none";
     if (sub) {
       const msg = "Hola LIT Nutrition! Tengo una consulta sobre los productos LIT Nutrition.";
@@ -53,6 +55,7 @@ function _applyFAQSeller() {
     if (noSellerMsg) noSellerMsg.style.display = "none";
   } else {
     if (waBtn) waBtn.style.display = "none";
+    if (sub) sub.innerHTML = "Tu asesor no configuró WhatsApp.";
     if (noSellerMsg) noSellerMsg.style.display = "block";
   }
 }
@@ -72,6 +75,12 @@ function _propagateInvite() {
 /* ── Bootstrap ────────────────────────────────────────────────────────────── */
 async function init() {
   await loadLandingData();
+
+  if (state.invalidInvite) {
+    renderNotFound();
+    hideLoader("app-loader", 0);
+    return;
+  }
 
   applySeller();
   _propagateInvite();

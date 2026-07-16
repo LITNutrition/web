@@ -14,23 +14,12 @@ export const STOCK_LIMIT_ENABLED = 0;
 
 /* Estado global de la sesión de landing */
 export const state = {
-  seller:      null,   // perfil del seller (o null si no hay invite)
-  catalog:     null,   // { products: [] }
-  sellerStock: {},     // { product_id: quantity }
-  inviteCode:  null,   // string o null
+  seller:        null,   // perfil del seller (o null si no hay invite)
+  catalog:       null,   // { products: [] }
+  sellerStock:   {},     // { product_id: quantity }
+  inviteCode:    null,   // string o null
+  invalidInvite: false,  // true si invite=code pero seller no encontrado/inactivo
 };
-
-export const FALLBACK_CONTACT = {
-  name: "LIT Nutrition",
-  phone: "+59157358199",
-  phones: ["+59157358199", "+59178299604"],
-  qr_url: null,
-};
-
-export function getActiveContact() {
-  if (state.inviteCode && state.seller?.phone) return state.seller;
-  return FALLBACK_CONTACT;
-}
 
 /* Leer y persistir el inviteCode. Se lee de ?invite=CODE en la URL. En navegación interna (SPA entre páginas) se propaga via preserveInvite(). */
 export function initInviteCode() {
@@ -119,6 +108,8 @@ export async function loadLandingData() {
     ? (stockResult.value.stock || {})
     : {};
 
+  state.invalidInvite = Boolean(state.inviteCode) && !state.seller;
+
   return state;
 }
 
@@ -160,4 +151,24 @@ export function hideLoader(loaderId = "app-loader", delay = 700) {
     const loader = el(loaderId);
     if (loader) loader.classList.add("hidden");
   }, delay);
+}
+
+/* Página 404 para sellers inválidos */
+export function renderNotFound() {
+  document.body.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center;font-family:var(--font-body,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif);">
+      <img src="https://lit-nutrition.com/public/icon/image/logo.png"
+           alt="LIT Nutrition" style="width:80px;height:auto;margin-bottom:24px;opacity:0.85;"
+           onerror="this.style.display='none'">
+      <h1 style="font-size:1.6rem;color:var(--text,#1a1a2e);margin:0 0 12px;letter-spacing:0.04em;">
+        Vendedor no encontrado
+      </h1>
+      <p style="font-size:0.95rem;color:var(--text-2,#666);max-width:400px;margin:0 0 28px;line-height:1.5;">
+        El enlace que usaste no es v&aacute;lido o el vendedor no est&aacute; activo en este momento.
+      </p>
+      <a href="/"
+         style="display:inline-block;background:var(--accent,#ff6b1a);color:#fff;padding:12px 28px;border-radius:12px;font-weight:600;font-size:0.9rem;letter-spacing:0.04em;text-decoration:none;transition:opacity 0.15s;">
+        Ir a LIT Nutrition
+      </a>
+    </div>`;
 }

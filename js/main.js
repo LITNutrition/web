@@ -3,7 +3,7 @@
  * Página principal: hero, catálogo, banners, testimonios.
  */
 
-import { loadLandingData, initHeaderScroll, hideLoader, el, state } from "./core.js";
+import { loadLandingData, initHeaderScroll, hideLoader, el, state, renderNotFound } from "./core.js";
 import { applySeller }                                    from "./seller.js";
 import { renderProducts, openBuyModal, initModalEvents }  from "./catalog.js";
 import { initProductPageRouting, closeProductPage }       from "./product-page.js";
@@ -49,6 +49,12 @@ async function init() {
   if (heroVideo) heroVideo.load();
 
   await loadLandingData();
+
+  if (state.invalidInvite) {
+    renderNotFound();
+    hideLoader("app-loader", 0);
+    return;
+  }
 
   applySeller();
   _propagateInvite();

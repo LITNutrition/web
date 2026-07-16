@@ -593,29 +593,47 @@ img { display: block; max-width: 100%; }
 .prod-buy-btn:hover  { background: #e05510; }
 .prod-buy-btn:active { transform: scale(0.96); }
 
-.prod-card-footer {
-  padding: 12px 18px;
-  border-top: 1px solid var(--border);
-}
-.prod-detail-btn {
-  width: 100%;
+/* Overlay "Ver detalles" en imagen */
+.prod-card-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  background: transparent;
-  color: var(--text-3);
-  border: none;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  transition: color 0.15s, background 0.15s;
-  letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
-.prod-detail-btn:hover { color: var(--accent); background: var(--accent-sub); }
+.prod-card:hover .prod-card-overlay {
+  opacity: 1;
+}
+.prod-detail-overlay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.92);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 8px 18px;
+  border-radius: 24px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.15s, transform 0.15s;
+  pointer-events: auto;
+}
+.prod-card:hover .prod-detail-overlay:hover {
+  background: #fff;
+  transform: scale(1.04);
+}
+
+/* Mobile: overlay siempre visible (no hay hover en touch) */
+@media (hover: none) {
+  .prod-card-overlay { opacity: 1; }
+}
 
 /* Skeleton */
 .skeleton-card {
@@ -2562,7 +2580,7 @@ img { display: block; max-width: 100%; }
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 50px;
 }
 
 @media (max-width: 900px) {
