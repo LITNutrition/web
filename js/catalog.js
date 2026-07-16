@@ -78,7 +78,7 @@ export function renderProducts() {
     }
     if (card) {
       const prod = products.find(p => Number(p.id) === Number(card.dataset.id));
-      if (prod) window.location.href = `product.html?id=${prod.id}${inviteQuery()}`;
+      if (prod) window.location.href = `product.html?id=${prod.id}${state.inviteCode ? '&invite=' + state.inviteCode : ''}`;
     }
   });
 
