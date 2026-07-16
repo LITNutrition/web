@@ -15,6 +15,17 @@ import { openBuyModal, initModalEvents } from "./catalog.js";
 import { renderHeader }         from "./header.js";
 import { renderFooter }         from "./footer.js";
 
+function _propagateInvite() {
+  if (!state.inviteCode) return;
+  const q = `?invite=${state.inviteCode}`;
+  document.querySelectorAll('.header-nav-link').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && !href.includes('invite=')) {
+      a.href = href + q;
+    }
+  });
+}
+
 renderHeader();
 initHeaderScroll("site-header");
 
@@ -37,6 +48,7 @@ async function init() {
   }
 
   applySeller();
+  _propagateInvite();
   renderFooter();
   initModalEvents();
 
