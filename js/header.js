@@ -28,7 +28,7 @@ export function renderHeader() {
         <span id="seller-pill-name">&ndash;</span>
         <span class="seller-pill-tag">tu asesor</span>
       </div>
-      <a href="#catalogo" class="header-cta" id="header-cta">Ver productos</a>
+      <a href="${isHome ? '#catalogo' : '/#catalogo'}" class="header-cta" id="header-cta">Ver productos</a>
     </div>`;
   document.body.prepend(header);
 
